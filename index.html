@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rate AI — Community ratings for AI tools</title>
+<meta name="description" content="Ratings for AI tools, written by the people using them. Every score is an average of individual verdicts, shown with the number of ratings behind it.">
+<meta name="theme-color" content="#F7F7F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/layout.css">
+<!-- Applies the saved theme before first paint, so there is no flash of the wrong one. -->
+<script>(function(){try{var t=localStorage.getItem('rateai.theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html" aria-label="Rate AI, home">
+      <svg class="brand-mark" viewBox="0 0 26 26" aria-hidden="true" focusable="false">
+        <rect width="26" height="26" rx="6" fill="var(--accent)"/>
+        <rect x="6.5" y="15" width="3" height="4.5" rx="1.5" fill="var(--accent-contrast)" opacity=".55"/>
+        <rect x="11.5" y="11" width="3" height="8.5" rx="1.5" fill="var(--accent-contrast)" opacity=".78"/>
+        <rect x="16.5" y="6.5" width="3" height="13" rx="1.5" fill="var(--accent-contrast)"/>
+      </svg>
+      <span class="brand-name">Rate AI</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="nav-link" href="index.html" aria-current="page">Overview</a>
+      <a class="nav-link" href="explore.html">Explore</a>
+      <a class="nav-link" href="compare.html">Compare</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-icon btn-sm" type="button" data-theme-toggle aria-label="Switch theme"></button>
+      <a class="btn btn-secondary btn-sm" href="submit.html">
+        <span data-icon="plus" data-icon-size="sm"></span>
+        <span class="nav-submit-label">Add a tool</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="page" id="main">
+  <div class="wrap">
+
+    <div class="notice notice-caution" data-mode-notice hidden></div>
+
+    <section class="hero">
+      <h1 class="hero-title">Ratings for AI tools, from the people using them.</h1>
+      <p class="hero-text">
+        Every score here is the average of individual verdicts, published with the
+        number of ratings behind it. No sponsored placements, no editorial picks.
+      </p>
+      <div class="hero-search search search-lg">
+        <span class="search-icon" data-icon="search" data-icon-size="lg"></span>
+        <input class="search-input" type="search" data-search-input
+               role="combobox" aria-expanded="false" aria-controls="suggest-list"
+               aria-autocomplete="list" autocomplete="off"
+               placeholder="Search by name, category or domain"
+               aria-label="Search tools">
+      </div>
+      <div class="hero-results">
+        <!-- The panel is the popup; the listbox inside it holds only options,
+             because a listbox whose children are not options reports itself as
+             empty. The "no match" line therefore sits outside it, and the
+             status paragraph is what actually tells a screen reader how many
+             results appeared — aria-expanded alone is silent. -->
+        <div class="suggest" data-suggest hidden>
+          <div id="suggest-list" role="listbox" aria-label="Search results" data-suggest-list></div>
+          <p class="suggest-empty" data-suggest-empty hidden></p>
+        </div>
+        <p class="sr-only" role="status" data-suggest-status></p>
+      </div>
+      <p class="hero-meta" data-stats>
+        <span class="t-muted">Loading the catalogue…</span>
+      </p>
+    </section>
+
+    <section aria-labelledby="leaderboard-title">
+      <div class="section-head">
+        <h2 class="section-title" id="leaderboard-title">
+          The leaderboard
+          <span class="section-count" data-leaderboard-count></span>
+        </h2>
+        <a class="section-action" href="explore.html">
+          All tools<span data-icon="arrowRight" data-icon-size="sm"></span>
+        </a>
+      </div>
+      <p class="section-sub">
+        Ranked by weighted average, so sample size counts. <a class="link" href="#method">How this works</a>.
+      </p>
+      <div data-leaderboard></div>
+    </section>
+
+    <div class="section split">
+      <section aria-labelledby="activity-title">
+        <div class="section-head">
+          <h2 class="section-title" id="activity-title">Recently reviewed</h2>
+        </div>
+        <div data-activity></div>
+      </section>
+
+      <section aria-labelledby="categories-title">
+        <div class="section-head">
+          <h2 class="section-title" id="categories-title">Browse by category</h2>
+        </div>
+        <div data-categories></div>
+      </section>
+    </div>
+
+    <section class="section" data-awaiting-section hidden aria-labelledby="awaiting-title">
+      <div class="section-head">
+        <h2 class="section-title" id="awaiting-title">Awaiting a first verdict</h2>
+        <a class="section-action" href="explore.html?sort=newest">
+          Recently added<span data-icon="arrowRight" data-icon-size="sm"></span>
+        </a>
+      </div>
+      <p class="section-sub">Listed, but nobody has rated them yet. Yours would be the first.</p>
+      <div data-awaiting></div>
+    </section>
+
+    <section class="section" aria-labelledby="method">
+      <div class="section-head">
+        <h2 class="section-title" id="method">How the score works</h2>
+      </div>
+      <div class="split">
+        <div class="stack">
+          <p class="t-body t-secondary measure">
+            A tool's score is the mean of every rating it has received, shown to one
+            decimal place with the rating count beside it. The count is never hidden,
+            because a 5.0 from two people and a 4.6 from twelve thousand are not the
+            same claim.
+          </p>
+          <p class="t-body t-secondary measure">
+            The leaderboard ranks by a weighted average that pulls low-sample tools
+            toward the catalogue mean, so a single five-star rating cannot outrank
+            years of accumulated opinion. Tools with no ratings are listed and
+            searchable, but never ranked.
+          </p>
+        </div>
+        <dl class="facts">
+          <div>
+            <dt>Ranking</dt>
+            <dd>Weighted average, 25-rating floor</dd>
+          </div>
+          <div>
+            <dt>Displayed score</dt>
+            <dd>Plain mean, one decimal</dd>
+          </div>
+          <div>
+            <dt>Paid placement</dt>
+            <dd>None</dd>
+          </div>
+          <div>
+            <dt>Who can rate</dt>
+            <dd>Anyone, once per review</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <span class="brand-name">Rate AI</span>
+        <p class="footer-blurb">
+          A public record of what AI tools are actually like to use, kept by the
+          people using them.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <div class="footer-col">
+          <span class="footer-col-title">Browse</span>
+          <a href="index.html">Overview</a>
+          <a href="explore.html">All tools</a>
+          <a href="compare.html">Compare</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-title">Contribute</span>
+          <a href="submit.html">Add a tool</a>
+          <a href="explore.html?sort=reviews">Rate a tool</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-title">About</span>
+          <a href="index.html#method">How scores work</a>
+        </div>
+      </nav>
+    </div>
+    <div class="footer-base">
+      <span>&copy; <span data-year>2026</span> Rate AI</span>
+      <span>Scores are community-submitted and unpaid.</span>
+    </div>
+  </div>
+</footer>
+
+<nav class="tabbar" aria-label="Primary">
+  <a class="tabbar-link" href="index.html" aria-current="page">
+    <span data-icon="home" data-icon-size="md"></span>Overview
+  </a>
+  <a class="tabbar-link" href="explore.html">
+    <span data-icon="compass" data-icon-size="md"></span>Explore
+  </a>
+  <a class="tabbar-link" href="compare.html">
+    <span data-icon="compare" data-icon-size="md"></span>Compare
+  </a>
+  <a class="tabbar-link" href="submit.html">
+    <span data-icon="plus" data-icon-size="md"></span>Add
+  </a>
+</nav>
+
+<script type="module" src="js/pages/home.js"></script>
+</body>
+</html>

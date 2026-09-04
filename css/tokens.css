@@ -1,0 +1,273 @@
+/* ==========================================================================
+   Rate AI — Design tokens
+   The only file in this project permitted to contain a raw colour value.
+   Everything downstream references these. See DESIGN.md for the reasoning.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* --- Surfaces & text -------------------------------------------------- */
+  --bg:              #F7F7F3;
+  --surface:         #FFFFFF;
+  --surface-subtle:  #F2F2EE;
+  --surface-sunken:  #EDEDE8;
+
+  --text-primary:    #171717;
+  /* The two quieter tiers are darker than a purely visual choice would make
+     them: metadata is content, so every tier has to clear 4.5:1 on all four
+     surfaces above. Hierarchy is then carried by size and weight as much as by
+     tone — see tools/verify.mjs, which enforces the ratios. */
+  --text-secondary:  #57574F;
+  --text-muted:      #6B6B64;
+
+  /* Three weights of hairline, and the distinction is not cosmetic.
+     border / border-strong outline things you read — cards, dividers, table
+     rows, notices — where the edge is decoration and quietness is the point.
+     border-control outlines things you operate: a white input on a near-white
+     panel is identified by its border and nothing else, so that border has to
+     clear 3:1 against every surface it can sit on (WCAG 1.4.11). Using the
+     quiet one there is the mistake this token exists to prevent. */
+  --border:          #E5E5DF;
+  --border-strong:   #D8D8D1;
+  --border-control:  #8C8C85;
+
+  /* --- Brand accent: deep spruce ---------------------------------------- */
+  /* accent          = solid brand fill (buttons, meters)
+     accent-contrast = text/icon sitting ON that fill
+     accent-text     = accent-coloured text sitting on a page surface        */
+  --accent:          #1F5741;
+  --accent-hover:    #17422F;
+  --accent-active:   #103324;
+  --accent-contrast: #FFFFFF;
+  --accent-text:     #1F5741;
+  --accent-wash:     #EDF1EC;
+  --accent-border:   #CFDDD4;
+
+  /* --- Semantic: only where colour carries meaning ---------------------- */
+  --positive:        #1F5741;
+  --caution:         #8A5A1B;
+  --caution-wash:    #F8F1E4;
+  --negative:        #9B2C2C;
+  --negative-wash:   #FAEFEF;
+
+  /* --- Rating marks: ink baseline with semantic tier highlights ------- */
+  --star-on:         #171717;
+  /* Same weight as a control border, for the same reason: on the rate-a-tool
+     form the empty stars are the targets, so they have to be visible before
+     they are chosen. Held to 3:1 rather than left as a faint track. */
+  --star-off:        #8C8C85;
+  --star-high:       #1F5741;
+  --star-mid:        #B45309;
+  --star-low:        #9B2C2C;
+
+  /* --- Focus ----------------------------------------------------------- */
+  --focus-ring:      #1F5741;
+
+  /* --- Elevation: hairline first, shadow only when genuinely floating -- */
+  --shadow-sm: 0 1px 2px rgba(23, 23, 23, .04);
+  --shadow-md: 0 4px 12px rgba(23, 23, 23, .06), 0 1px 2px rgba(23, 23, 23, .04);
+  --shadow-lg: 0 16px 40px rgba(23, 23, 23, .10), 0 2px 8px rgba(23, 23, 23, .05);
+}
+
+/* --- Dark: a warm ink, mirroring the warm paper of the light theme ------ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg:              #141412;
+    --surface:         #1C1C19;
+    --surface-subtle:  #232320;
+    --surface-sunken:  #111110;
+
+    --text-primary:    #F2F2ED;
+    --text-secondary:  #A6A69F;
+    --text-muted:      #8C8C82;
+
+    --border:          #2C2C28;
+    --border-strong:   #3A3A35;
+    --border-control:  #6D6D66;
+
+    --accent:          #7CCCA6;
+    --accent-hover:    #96D9B8;
+    --accent-active:   #AEE3C8;
+    --accent-contrast: #0E1F17;
+    --accent-text:     #7CCCA6;
+    --accent-wash:     #19241F;
+    --accent-border:   #2F473C;
+
+    --positive:        #7CCCA6;
+    --caution:         #D9A45B;
+    --caution-wash:    #262015;
+    --negative:        #E58C8C;
+    --negative-wash:   #2A1B1B;
+
+    --star-on:         #F2F2ED;
+    --star-off:        #6D6D66;
+    --star-high:       #7CCCA6;
+    --star-mid:        #F59E0B;
+    --star-low:        #E58C8C;
+
+    --focus-ring:      #7CCCA6;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, .35), 0 1px 2px rgba(0, 0, 0, .25);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
+  }
+}
+
+/* --- Manual override, set by the theme toggle before first paint -------- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg:              #141412;
+  --surface:         #1C1C19;
+  --surface-subtle:  #232320;
+  --surface-sunken:  #111110;
+
+  --text-primary:    #F2F2ED;
+  --text-secondary:  #A6A69F;
+  --text-muted:      #8C8C82;
+
+  --border:          #2C2C28;
+  --border-strong:   #3A3A35;
+  --border-control:  #6D6D66;
+
+  --accent:          #7CCCA6;
+  --accent-hover:    #96D9B8;
+  --accent-active:   #AEE3C8;
+  --accent-contrast: #0E1F17;
+  --accent-text:     #7CCCA6;
+  --accent-wash:     #19241F;
+  --accent-border:   #2F473C;
+
+  --positive:        #7CCCA6;
+  --caution:         #D9A45B;
+  --caution-wash:    #262015;
+  --negative:        #E58C8C;
+  --negative-wash:   #2A1B1B;
+
+  --star-on:         #F2F2ED;
+  --star-off:        #6D6D66;
+  --star-high:       #7CCCA6;
+  --star-mid:        #F59E0B;
+  --star-low:        #E58C8C;
+
+  --focus-ring:      #7CCCA6;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, .35), 0 1px 2px rgba(0, 0, 0, .25);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
+}
+
+/* ==========================================================================
+   Non-colour tokens — identical across themes
+   ========================================================================== */
+
+:root {
+  /* --- Type ------------------------------------------------------------- */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+
+  --t-display:  2.75rem;   /* 44px */
+  --t-h1:       1.875rem;  /* 30px */
+  --t-h2:       1.3125rem; /* 21px */
+  --t-h3:       1rem;      /* 16px */
+  --t-body:     0.9375rem; /* 15px */
+  --t-small:    0.84375rem;/* 13.5px */
+  --t-label:    0.78125rem;/* 12.5px */
+  --t-meta:     0.75rem;   /* 12px */
+  --t-score:    2.5rem;    /* 40px */
+
+  --lh-display: 1.06;
+  --lh-tight:   1.15;
+  --lh-snug:    1.3;
+  --lh-normal:  1.45;
+  --lh-prose:   1.6;
+
+  --tr-display: -0.03em;
+  --tr-h1:      -0.02em;
+  --tr-h2:      -0.015em;
+  --tr-h3:      -0.01em;
+  --tr-score:   -0.035em;
+
+  --fw-normal:   400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+
+  --measure: 68ch;
+
+  /* --- Space: the only permitted values -------------------------------- */
+  --s-1:   4px;
+  --s-2:   8px;
+  --s-3:   12px;
+  --s-4:   16px;
+  --s-5:   20px;
+  --s-6:   24px;
+  --s-7:   32px;
+  --s-8:   40px;
+  --s-9:   48px;
+  --s-10:  64px;
+  --s-11:  80px;
+
+  /* --- Radius: curvature scales with the element ----------------------- */
+  --r-sm:   8px;
+  --r-md:  10px;
+  --r-lg:  12px;
+  --r-pill: 999px;
+
+  /* --- Controls -------------------------------------------------------- */
+  --ctl-sm: 32px;
+  --ctl:    40px;
+  --ctl-lg: 48px;
+  --ctl-xl: 56px;  /* hero search only — the one control meant to dominate */
+  --touch:  44px;   /* minimum comfortable target */
+
+  /* A badge is not on the control ladder: its height is derived from what it
+     contains — a 12px meta line, 4px of padding above and below, and a hairline
+     either side. Named because the badge and its loading placeholder must be
+     exactly the same height or cards resize as they load. */
+  --badge-h: 22px;
+
+  /* --- Layout ---------------------------------------------------------- */
+  --content-max: 1152px;
+  --gutter:      24px;
+  --nav-h:       56px;
+  --tabbar-h:    58px;
+
+  /* --- Motion: answers actions, never decorates ------------------------ */
+  --dur-fast: 120ms;
+  --dur:      180ms;
+  --dur-slow: 240ms;
+  --ease:     cubic-bezier(.2, .7, .3, 1);
+
+  /* --- Stacking -------------------------------------------------------- */
+  --z-nav:   100;
+  --z-toast: 300;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --gutter:    16px;
+    --t-display: 2rem;      /* 32px */
+    --t-h1:      1.5rem;    /* 24px */
+    --t-h2:      1.1875rem; /* 19px */
+    --t-score:   2.125rem;  /* 34px */
+  }
+}
+
+@media (max-width: 359px) {
+  :root {
+    --gutter:    12px;
+    --t-display: 1.75rem;   /* 28px */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur:      0.01ms;
+    --dur-slow: 0.01ms;
+  }
+}

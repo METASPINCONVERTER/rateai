@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tool — Rate AI</title>
+<meta name="description" content="Community rating, score breakdown and written reviews for an AI tool on Rate AI.">
+<meta name="theme-color" content="#F7F7F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/layout.css">
+<!-- Applies the saved theme before first paint, so there is no flash of the wrong one. -->
+<script>(function(){try{var t=localStorage.getItem('rateai.theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html" aria-label="Rate AI, home">
+      <svg class="brand-mark" viewBox="0 0 26 26" aria-hidden="true" focusable="false">
+        <rect width="26" height="26" rx="6" fill="var(--accent)"/>
+        <rect x="6.5" y="15" width="3" height="4.5" rx="1.5" fill="var(--accent-contrast)" opacity=".55"/>
+        <rect x="11.5" y="11" width="3" height="8.5" rx="1.5" fill="var(--accent-contrast)" opacity=".78"/>
+        <rect x="16.5" y="6.5" width="3" height="13" rx="1.5" fill="var(--accent-contrast)"/>
+      </svg>
+      <span class="brand-name">Rate AI</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link" href="explore.html" aria-current="page">Explore</a>
+      <a class="nav-link" href="compare.html">Compare</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-icon btn-sm" type="button" data-theme-toggle aria-label="Switch theme"></button>
+      <a class="btn btn-secondary btn-sm" href="submit.html">
+        <span data-icon="plus" data-icon-size="sm"></span>
+        <span class="nav-submit-label">Add a tool</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="page" id="main">
+  <div class="wrap">
+
+    <div class="notice notice-caution" data-mode-notice hidden></div>
+
+    <a class="back-link" href="explore.html">
+      <span data-icon="arrowLeft" data-icon-size="sm"></span>All tools
+    </a>
+
+    <!-- Loading -->
+    <div data-loading></div>
+
+    <!-- Not found / failed -->
+    <div data-error hidden></div>
+
+    <!-- The record itself -->
+    <div data-content hidden>
+
+      <div class="tool-head">
+        <div class="tool-head-id">
+          <span data-mark></span>
+          <div class="grow">
+            <h1 class="tool-head-title"><span data-name></span><span data-verified></span></h1>
+            <div class="tool-head-meta" data-meta></div>
+          </div>
+        </div>
+        <div class="tool-head-actions">
+          <a class="btn btn-secondary" data-website href="#" target="_blank" rel="noopener noreferrer">
+            Visit site<span data-icon="externalLink" data-icon-size="sm"></span>
+          </a>
+          <a class="btn btn-secondary btn-icon" data-compare href="compare.html" aria-label="Compare this tool" title="Compare">
+            <span data-icon="compare" data-icon-size="md"></span>
+          </a>
+          <button class="btn btn-primary" type="button" data-rate-jump>Rate it</button>
+        </div>
+      </div>
+
+      <div class="tool-layout">
+
+        <div>
+          <section class="section" aria-labelledby="about-title">
+            <div class="section-head">
+              <h2 class="section-title" id="about-title">About</h2>
+            </div>
+            <p class="about-text" data-about></p>
+            <dl class="facts" data-facts></dl>
+          </section>
+
+          <form class="write-review" id="rate" data-review-form novalidate aria-labelledby="rate-title">
+            <h2 class="panel-title" id="rate-title">Add your rating</h2>
+            <p class="panel-text">
+              Your score joins the average as soon as you publish. One rating per review.
+            </p>
+
+            <div class="field">
+              <span class="field-label" id="rating-label">Your rating</span>
+              <div data-star-slot></div>
+              <p class="field-error" role="alert" data-error-for="rating" hidden>
+                <span data-icon="alertCircle" data-icon-size="sm"></span>
+                <span data-error-text></span>
+              </p>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label class="field-label" for="rv-name">
+                  Your name<span class="field-optional">optional</span>
+                </label>
+                <input class="input" id="rv-name" name="name" type="text" maxlength="40"
+                       autocomplete="name" placeholder="Anonymous">
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="rv-title">
+                  Headline<span class="field-optional">optional</span>
+                </label>
+                <input class="input" id="rv-title" name="title" type="text" maxlength="80"
+                       placeholder="One line that sums it up">
+              </div>
+
+              <div class="field form-grid-full">
+                <label class="field-label" for="rv-body">Your review</label>
+                <textarea class="textarea" id="rv-body" name="body" maxlength="1200"
+                          aria-describedby="rv-body-hint"
+                          placeholder="What is it good at, where does it fall short, and who would you recommend it to?"></textarea>
+                <p class="field-hint" id="rv-body-hint">
+                  <span data-body-count>0</span> of 1200 characters
+                </p>
+                <p class="field-error" role="alert" data-error-for="body" hidden>
+                  <span data-icon="alertCircle" data-icon-size="sm"></span>
+                  <span data-error-text></span>
+                </p>
+              </div>
+            </div>
+
+            <div class="form-foot">
+              <span class="form-foot-note">Published publicly, under the name you give.</span>
+              <button class="btn btn-primary" type="submit" data-submit-review>Publish review</button>
+            </div>
+          </form>
+
+          <section class="section" aria-labelledby="reviews-title">
+            <div class="section-head">
+              <h2 class="section-title" id="reviews-title">
+                Reviews<span class="section-count" data-review-count></span>
+              </h2>
+            </div>
+            <div data-reviews aria-live="polite"></div>
+          </section>
+        </div>
+
+        <aside class="tool-aside" aria-label="Score summary">
+          <div class="scorecard">
+            <div data-score></div>
+            <hr class="scorecard-divider">
+            <h2 class="panel-title">Rating breakdown</h2>
+            <p class="panel-text">How the individual ratings fall.</p>
+            <div data-dist></div>
+          </div>
+          <div class="card card-pad" data-standing hidden></div>
+        </aside>
+
+      </div>
+
+      <section class="section" data-related-section hidden aria-labelledby="related-title">
+        <div class="section-head">
+          <h2 class="section-title" id="related-title">Also in this category</h2>
+          <a class="section-action" data-category-link href="explore.html">
+            See all<span data-icon="arrowRight" data-icon-size="sm"></span>
+          </a>
+        </div>
+        <div data-related></div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <span class="brand-name">Rate AI</span>
+        <p class="footer-blurb">
+          A public record of what AI tools are actually like to use, kept by the
+          people using them.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <div class="footer-col">
+          <span class="footer-col-title">Browse</span>
+          <a href="index.html">Overview</a>
+          <a href="explore.html">All tools</a>
+          <a href="compare.html">Compare</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-title">Contribute</span>
+          <a href="submit.html">Add a tool</a>
+          <a href="explore.html?sort=reviews">Rate a tool</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-title">About</span>
+          <a href="index.html#method">How scores work</a>
+        </div>
+      </nav>
+    </div>
+    <div class="footer-base">
+      <span>&copy; <span data-year>2026</span> Rate AI</span>
+      <span>Scores are community-submitted and unpaid.</span>
+    </div>
+  </div>
+</footer>
+
+<nav class="tabbar" aria-label="Primary">
+  <a class="tabbar-link" href="index.html">
+    <span data-icon="home" data-icon-size="md"></span>Overview
+  </a>
+  <a class="tabbar-link" href="explore.html" aria-current="page">
+    <span data-icon="compass" data-icon-size="md"></span>Explore
+  </a>
+  <a class="tabbar-link" href="compare.html">
+    <span data-icon="compare" data-icon-size="md"></span>Compare
+  </a>
+  <a class="tabbar-link" href="submit.html">
+    <span data-icon="plus" data-icon-size="md"></span>Add
+  </a>
+</nav>
+
+<script type="module" src="js/pages/tool.js"></script>
+</body>
+</html>

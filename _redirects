@@ -1,0 +1,4 @@
+# Rate AI production redirects for single-page routing
+/reviewe/*   /tool.html   200
+/review/*    /tool.html   200
+/reviews/*   /tool.html   200
