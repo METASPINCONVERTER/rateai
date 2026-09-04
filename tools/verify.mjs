@@ -72,7 +72,16 @@ const PAGE_OF = {
   'js/pages/tool.js': 'tool.html',
   'js/pages/compare.js': 'compare.html',
   'js/pages/submit.js': 'submit.html',
+  'js/pages/about.js': 'about.html',
+  'js/pages/contact.js': 'contact.html',
+  'js/pages/privacy.js': 'privacy.html',
+  'js/pages/terms.js': 'terms.html',
+  'js/pages/how-it-works.js': 'how-it-works.html',
+  'js/pages/trust.js': 'trust.html',
+  'js/pages/guidelines.js': 'guidelines.html',
+  'js/pages/faq.js': 'faq.html',
   'js/pages/notfound.js': '404.html',
+  'js/pages/pricing.js': 'pricing.html',
 };
 
 /* Comments are blanked rather than deleted so every byte offset — and so every
@@ -1021,9 +1030,14 @@ for (const path of HTML) {
     fail('a11y/tabindex', `${path}:${ln[m.index]} tabindex="${m[1]}" — only 0 and -1 are safe`);
   }
 
-  /* Current page marked once for the desktop nav and once for the tab bar. */
+  /* Current page marked once for the desktop nav and once for the tab bar.
+     Secondary utility pages without primary navigation links have 0. */
   const current = matches(html, /aria-current="page"/g).length;
-  const expected = path === '404.html' ? 0 : 2;
+  const zeroCurrentPages = [
+    '404.html', 'about.html', 'contact.html', 'privacy.html', 'terms.html',
+    'tool.html', 'submit.html', 'how-it-works.html', 'trust.html', 'guidelines.html', 'faq.html',
+  ];
+  const expected = zeroCurrentPages.includes(path) ? 0 : 2;
   if (current !== expected) {
     fail('a11y/current', `${path}: ${current} aria-current="page" (expected ${expected})`);
   }
@@ -1109,6 +1123,86 @@ function optionValues(html, selectId) {
     .map((m) => m[1] ?? m[2]);
   if (tiers.join(',') !== radios.join(',')) {
     fail('drift/pricing', `submit.html pricing [${radios}] != PRICING [${tiers}]`);
+  }
+  ran();
+}
+
+{
+  if (!existsSync(join(ROOT, 'site.webmanifest'))) {
+    fail('manifest/missing', 'site.webmanifest is missing');
+  } else {
+    try {
+      const manifest = JSON.parse(load('site.webmanifest'));
+      if (!manifest.name || !manifest.icons?.length) {
+        fail('manifest/invalid', 'site.webmanifest missing name or icons');
+      }
+    } catch {
+      fail('manifest/json', 'site.webmanifest is not valid JSON');
+    }
+  }
+  if (!existsSync(join(ROOT, 'robots.txt'))) {
+    fail('seo/robots', 'robots.txt is missing');
+  }
+  if (!existsSync(join(ROOT, 'sitemap.xml'))) {
+    fail('seo/sitemap', 'sitemap.xml is missing');
+  }
+  ran();
+}
+
+{
+  const toolDir = join(ROOT, 'review');
+  if (existsSync(toolDir)) {
+    const slugs = readdirSync(toolDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name);
+
+    const titles = new Set();
+    const descs = new Set();
+
+    for (const slug of slugs) {
+      const indexPath = `review/${slug}/index.html`;
+      if (!existsSync(join(ROOT, indexPath))) {
+        fail('seo/page', `${indexPath} missing`);
+        continue;
+      }
+      const content = load(indexPath);
+      const titleMatch = content.match(/<title>([^<]+)<\/title>/);
+      const descMatch = content.match(/<meta name="description" content="([^"]+)">/);
+      const jsonLdMatch = content.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+
+      if (!titleMatch) {
+        fail('seo/title', `${indexPath} missing <title>`);
+      } else {
+        const title = titleMatch[1].trim();
+        if (titles.has(title)) {
+          fail('seo/title-duplicate', `${indexPath} duplicate title: ${title}`);
+        }
+        titles.add(title);
+      }
+
+      if (!descMatch) {
+        fail('seo/desc', `${indexPath} missing meta description`);
+      } else {
+        const desc = descMatch[1].trim();
+        if (descs.has(desc)) {
+          fail('seo/desc-duplicate', `${indexPath} duplicate description: ${desc}`);
+        }
+        descs.add(desc);
+      }
+
+      if (!jsonLdMatch) {
+        fail('seo/jsonld', `${indexPath} missing JSON-LD`);
+      } else {
+        try {
+          const parsed = JSON.parse(jsonLdMatch[1]);
+          if (!parsed['@context'] || !parsed['@type']) {
+            fail('seo/jsonld-invalid', `${indexPath} JSON-LD missing @context or @type`);
+          }
+        } catch {
+          fail('seo/jsonld-syntax', `${indexPath} invalid JSON-LD syntax`);
+        }
+      }
+    }
   }
   ran();
 }
@@ -1241,6 +1335,8 @@ const SAFE_PRODUCERS = [
   'scoreCell', 'textCell', 'identityCell', 'pricingCell', 'categoryCell',
   'websiteCell', 'optionMarkup', 'chip', 'categoryBadge', 'pricingBadges',
   'formatExact', 'formatScore', 'formatDate', 'plural', 'avatar', 'ballDots',
+  'richCatCard', 'richCatGrid', 'favoriteButton', 'breadcrumbsMarkup',
+  'toolFeaturesList', 'toolProsCons', 'toolUseCases',
 ];
 
 for (const path of JS) {
@@ -1311,11 +1407,11 @@ for (const path of JS) {
      field that stops being read is a field that stops being displayed. */
   const TOOL_READ = [
     'avgRating', 'category', 'company', 'createdAt', 'description', 'domain',
-    'founded', 'name', 'pricing', 'ratingDistribution', 'totalRatings',
+    'founded', 'iconUrl', 'name', 'pricing', 'ratingDistribution', 'totalRatings',
     'totalReviews', 'twitter', 'updatedAt', 'verified', 'website',
   ];
   const REVIEW_READ = [
-    'body', 'createdAt', 'likes', 'rating', 'title', 'toolDomain', 'userName',
+    'body', 'createdAt', 'likes', 'rating', 'title', 'toolDomain', 'uid', 'userName',
     'userPhoto',
   ];
 
@@ -1326,7 +1422,7 @@ for (const path of JS) {
     'totalReviews', 'updatedAt', 'verified', 'website',
   ];
   const REVIEW_WRITE = [
-    'body', 'createdAt', 'likes', 'rating', 'title', 'toolDomain', 'userName',
+    'body', 'createdAt', 'likes', 'rating', 'title', 'toolDomain', 'uid', 'userName',
   ];
   /* Deliberately not required: the original always stored a generated avatar
      URL, this build stores one only if it is given one and draws a lettermark

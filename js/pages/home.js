@@ -1,8 +1,9 @@
 /**
- * Rate AI — Overview page
+ * Rate AI — Overview & Discovery Homepage
  *
- * The dashboard: the leaderboard, recent activity, categories, and the tools
- * still waiting for a first verdict. One catalogue read serves all four.
+ * Polished discovery homepage with hero search, live catalogue statistics,
+ * Bayesian leaderboard, recent verified reviews feed, visual categories,
+ * and awaiting-verdict shelf.
  */
 
 import { initShell, toast } from '../shell.js';
@@ -22,43 +23,54 @@ import {
   ledger,
   catGrid,
   feedList,
-  toolGrid,
   emptyState,
   errorState,
   skeletonLedger,
   skeletonFeed,
   hydrateMarks,
+  hydrateFavButtons,
 } from '../components.js';
 import {
   esc,
   formatExact,
+  formatScore,
   plural,
-  exploreHref,
   toolHref,
-  submitHref,
+  searchHref,
   debounce,
 } from '../util.js';
+import { mountNavAuth, requireAuth } from '../auth.js';
+import { applySEO, siteSchema } from '../seo.js';
 
 initShell({ isMock });
+mountNavAuth();
 
-const el = {
-  stats: document.querySelector('[data-stats]'),
-  leaderboard: document.querySelector('[data-leaderboard]'),
-  leaderboardCount: document.querySelector('[data-leaderboard-count]'),
-  activity: document.querySelector('[data-activity]'),
-  categories: document.querySelector('[data-categories]'),
-  awaiting: document.querySelector('[data-awaiting]'),
-  awaitingSection: document.querySelector('[data-awaiting-section]'),
-  search: document.querySelector('[data-search-input]'),
-  suggest: document.querySelector('[data-suggest]'),
-  suggestList: document.querySelector('[data-suggest-list]'),
-  suggestEmpty: document.querySelector('[data-suggest-empty]'),
-  suggestStatus: document.querySelector('[data-suggest-status]'),
-};
+applySEO({
+  title: 'Rate AI — Community ratings for AI tools',
+  description: 'Ratings for AI tools, written by the people using them. Every score is an average of individual verdicts with transparent Bayesian weighting.',
+  canonicalPath: '/',
+  jsonLd: siteSchema(),
+});
+
+const el = {};
 
 const LEADERBOARD_SIZE = 10;
-
 let allTools = [];
+
+function queryElements() {
+  el.stats = document.querySelector('[data-stats]');
+  el.leaderboard = document.querySelector('[data-leaderboard]');
+  el.leaderboardCount = document.querySelector('[data-leaderboard-count]');
+  el.activity = document.querySelector('[data-activity]');
+  el.categories = document.querySelector('[data-categories]');
+  el.awaiting = document.querySelector('[data-awaiting]');
+  el.awaitingSection = document.querySelector('[data-awaiting-section]');
+  el.search = document.querySelector('[data-search-input]');
+  el.suggest = document.querySelector('[data-suggest]');
+  el.suggestList = document.querySelector('[data-suggest-list]');
+  el.suggestEmpty = document.querySelector('[data-suggest-empty]');
+  el.suggestStatus = document.querySelector('[data-suggest-status]');
+}
 
 /* ==========================================================================
    Render
@@ -90,7 +102,7 @@ function renderLeaderboard(tools) {
       text: 'The leaderboard fills in as soon as tools start collecting ratings.',
       actions:
         `<a class="btn btn-primary btn-sm" href="explore.html">Browse the catalogue</a>` +
-        `<a class="btn btn-secondary btn-sm" href="submit.html">Add a tool</a>`,
+        `<a class="btn btn-secondary btn-sm" href="categories.html">Explore categories</a>`,
     });
     return;
   }
@@ -98,73 +110,63 @@ function renderLeaderboard(tools) {
   el.leaderboardCount.textContent = `top ${top.length}`;
   el.leaderboard.innerHTML = ledger(top);
   hydrateMarks(el.leaderboard);
+  hydrateFavButtons(el.leaderboard, { requireAuth });
 }
 
 function renderCategories(tools) {
-  const categories = categoriesOf(tools);
-  if (!categories.length) {
-    el.categories.innerHTML = emptyState({
-      mark: 'grid',
-      title: 'No categories yet',
-      text: 'Categories appear as tools are added.',
-      small: true,
-    });
+  const cats = categoriesOf(tools);
+  if (!cats.length) {
+    el.categories.innerHTML = `<p class="t-small t-muted">No categories listed yet.</p>`;
     return;
   }
-  el.categories.innerHTML = catGrid(categories);
+  el.categories.innerHTML = catGrid(cats.slice(0, 8));
 }
 
 function renderAwaiting(tools) {
-  const waiting = awaitingRatings(tools, 3);
-  if (!waiting.length) {
+  const unrated = awaitingRatings(tools, 4);
+  if (!unrated.length) {
     el.awaitingSection.hidden = true;
+    el.awaiting.innerHTML = '';
     return;
   }
   el.awaitingSection.hidden = false;
-  el.awaiting.innerHTML = toolGrid(waiting);
+  el.awaiting.innerHTML = ledger(unrated, { startAt: 1, head: false });
   hydrateMarks(el.awaiting);
+  hydrateFavButtons(el.awaiting, { requireAuth });
 }
 
 async function renderActivity(tools) {
+  el.activity.innerHTML = skeletonFeed(3);
+
   try {
     const reviews = await loadRecentReviews(5);
-    const entries = withTools(reviews, tools);
+    const enriched = withTools(reviews, tools);
 
-    if (!entries.length) {
+    if (!enriched.length) {
       el.activity.innerHTML = emptyState({
-        mark: 'message',
+        mark: 'inbox',
         title: 'No reviews yet',
-        text: 'The first written review will show up here.',
-        actions: `<a class="btn btn-primary btn-sm" href="explore.html">Find a tool to rate</a>`,
-        small: true,
+        text: 'The activity feed updates as people write reviews across the site.',
       });
       return;
     }
 
-    el.activity.innerHTML = feedList(entries);
-  } catch (error) {
-    /* The rest of the page is fine — degrade this panel only. */
-    el.activity.innerHTML = errorState(error, { retryLabel: 'Reload activity' });
+    el.activity.innerHTML = feedList(enriched);
+  } catch (err) {
+    el.activity.innerHTML = errorState({
+      title: 'Could not load recent reviews',
+      message: 'Failed to retrieve recent community feedback.',
+      onRetry: () => renderActivity(tools),
+    });
   }
 }
 
 /* ==========================================================================
-   Search suggestions
+   Home page search suggestions
    ========================================================================== */
 
-let suggestions = [];
 let activeIndex = -1;
-
-function closeSuggest() {
-  el.suggest.hidden = true;
-  el.suggestList.innerHTML = '';
-  el.suggestEmpty.hidden = true;
-  el.suggestStatus.textContent = '';
-  el.search.setAttribute('aria-expanded', 'false');
-  el.search.removeAttribute('aria-activedescendant');
-  suggestions = [];
-  activeIndex = -1;
-}
+let suggestions = [];
 
 function renderSuggest(query) {
   const q = query.trim();
@@ -183,38 +185,41 @@ function renderSuggest(query) {
     el.suggestList.innerHTML = '';
     el.suggestEmpty.innerHTML =
       `No tool matches “${esc(q)}”. ` +
-      `<a class="link" href="${esc(submitHref({ name: q }))}">Add it</a>.`;
+      `<a class="link" href="${esc(searchHref(q))}">Search all tools</a>.`;
     el.suggestEmpty.hidden = false;
     el.suggestStatus.textContent = `No tools match ${q}.`;
     return;
   }
 
   el.suggestEmpty.hidden = true;
-  /* Replaced on every keystroke, so a polite region only ever reads the count
-     the reader stopped typing on. */
   el.suggestStatus.textContent =
     `${suggestions.length} ${plural(suggestions.length, 'tool', 'tools')} match. ` +
     `Use the arrow keys to review them.`;
 
   el.suggestList.innerHTML = suggestions
     .map((tool, i) => {
-      const score = tool.totalRatings
-        ? `<span class="suggest-score">${tool.avgRating.toFixed(1)}</span>`
-        : `<span class="suggest-score t-muted">—</span>`;
+      const href = toolHref(tool.domain, tool.name);
       return (
-        `<a class="suggest-item" id="suggest-${i}" role="option" aria-selected="false" ` +
-        `href="${esc(toolHref(tool.domain, tool.name))}">` +
+        `<a class="suggest-item" id="suggest-${i}" role="option" ` +
+        `aria-selected="false" href="${esc(href)}" data-href="${esc(href)}">` +
         `<span class="grow"><span class="suggest-name truncate">${esc(tool.name)}</span>` +
-        `<span class="suggest-cat">${esc(tool.category)} · ${esc(tool.domain)}</span></span>` +
-        score +
+        `<span class="suggest-cat">${esc(tool.category || '')}</span></span>` +
+        `<span class="suggest-score">${formatScore(tool.avgRating)}</span>` +
         `</a>`
       );
     })
     .join('');
 }
 
+function closeSuggest() {
+  el.suggest.hidden = true;
+  el.search.setAttribute('aria-expanded', 'false');
+  el.search.removeAttribute('aria-activedescendant');
+  activeIndex = -1;
+}
+
 function moveActive(delta) {
-  const items = [...el.suggestList.querySelectorAll('.suggest-item')];
+  const items = el.suggestList.querySelectorAll('.suggest-item');
   if (!items.length) return;
 
   items[activeIndex]?.classList.remove('is-active');
@@ -248,45 +253,50 @@ function initSearch() {
         closeSuggest();
       }
     } else if (event.key === 'Enter') {
-      event.preventDefault();
-      const items = [...el.suggestList.querySelectorAll('.suggest-item')];
-      if (activeIndex >= 0 && items[activeIndex]) {
-        window.location.href = items[activeIndex].getAttribute('href');
+      const active = el.suggestList.querySelector('.suggest-item.is-active');
+      if (active) {
+        event.preventDefault();
+        window.location.href = active.getAttribute('data-href');
       } else if (el.search.value.trim()) {
-        /* No highlighted result: take the whole query to the full listing. */
-        window.location.href = exploreHref({ q: el.search.value.trim() });
+        event.preventDefault();
+        window.location.href = searchHref(el.search.value.trim());
       }
     }
   });
 
-  /* Clicking away closes, but a click on a result must be allowed to land. */
   document.addEventListener('click', (event) => {
-    if (!el.suggest.contains(event.target) && event.target !== el.search) {
+    if (!event.target.closest('.hero-search') && !event.target.closest('.suggest')) {
       closeSuggest();
     }
   });
 }
 
 /* ==========================================================================
-   Load
+   Boot
    ========================================================================== */
 
-function showLoading() {
-  el.leaderboard.innerHTML = skeletonLedger(6);
-  el.activity.innerHTML = skeletonFeed(4);
+function showSkeletons() {
+  el.leaderboard.innerHTML = skeletonLedger(LEADERBOARD_SIZE);
+  el.activity.innerHTML = skeletonFeed(3);
 }
 
 function showFailure(error) {
-  el.stats.innerHTML = `<span class="t-muted">Catalogue unavailable</span>`;
-  el.leaderboardCount.textContent = '';
-  el.leaderboard.innerHTML = errorState(error);
+  el.stats.innerHTML = `<span class="t-muted">Could not load the catalogue</span>`;
+  el.leaderboard.innerHTML = errorState({
+    title: 'Could not load the leaderboard',
+    message: error.message || 'There was a problem loading tool data.',
+    onRetry: () => boot({ force: true }),
+  });
   el.activity.innerHTML = '';
   el.categories.innerHTML = '';
   el.awaitingSection.hidden = true;
+  toast('Could not connect to the catalogue.', 'error');
 }
 
-async function load({ force = false } = {}) {
-  showLoading();
+async function boot({ force = false } = {}) {
+  showSkeletons();
+  initSearch();
+
   try {
     if (force) invalidate();
     allTools = await loadTools({ force });
@@ -296,8 +306,8 @@ async function load({ force = false } = {}) {
       el.leaderboard.innerHTML = emptyState({
         mark: 'inbox',
         title: 'No tools listed yet',
-        text: 'Rate AI is connected to its database, but there are no tools in it. Add the first one and the leaderboard starts here.',
-        actions: `<a class="btn btn-primary btn-sm" href="submit.html">Add the first tool</a>`,
+        text: 'Rate AI is connected to its database, but there are no tools in it.',
+        actions: `<a class="btn btn-primary btn-sm" href="explore.html">Browse the catalogue</a>`,
       });
       el.activity.innerHTML = '';
       el.categories.innerHTML = '';
@@ -315,20 +325,11 @@ async function load({ force = false } = {}) {
   }
 }
 
-/* Retry buttons are rendered inside states, so the handler is delegated. */
-document.addEventListener('click', (event) => {
-  const retry = event.target.closest('[data-retry]');
-  if (!retry) return;
-  event.preventDefault();
-  load({ force: true });
-});
-
-window.addEventListener('online', () => {
-  if (!allTools.length) {
-    toast('Back online — reloading the catalogue.', 'info');
-    load({ force: true });
+export function initPage() {
+  queryElements();
+  if (el.leaderboard) {
+    boot();
   }
-});
+}
 
-initSearch();
-load();
+initPage();

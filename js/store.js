@@ -28,25 +28,57 @@ export { DataError };
 export { distributionRows, distributionIsPartial };
 
 /* ==========================================================================
-   Mode
+   Mode & Cache Configuration
    ========================================================================== */
 
 const MOCK_KEY = 'rateai.mock';
 const CACHE_KEY = 'rateai.tools.v1';
-const CACHE_TTL = 5 * 60 * 1000;
+const CACHE_TTL = 30 * 1000; // 30-second cache; instant refresh on reload
+
+const MOCK_MAX_AGE = 60 * 60 * 1000;
+
+function isPageReload() {
+  if (typeof window === 'undefined') return false;
+  try {
+    const nav = performance.getEntriesByType?.('navigation')?.[0];
+    if (nav) return nav.type === 'reload';
+    return performance.navigation?.type === 1;
+  } catch {
+    return false;
+  }
+}
 
 function readMockFlag() {
   try {
     const param = new URLSearchParams(window.location.search).get('mock');
-    if (param === '1' || param === 'true') {
-      sessionStorage.setItem(MOCK_KEY, '1');
-      return true;
-    }
-    if (param === '0' || param === 'false') {
+    if (param === '0' || param === 'false' || param === 'off') {
       sessionStorage.removeItem(MOCK_KEY);
       return false;
     }
-    return sessionStorage.getItem(MOCK_KEY) === '1';
+    if (param === '1' || param === 'true' || param === 'on') {
+      sessionStorage.setItem(MOCK_KEY, String(Date.now()));
+      return true;
+    }
+    // If the user reloads the page without ?mock=1, clear mock mode so live Firestore always loads
+    if (isPageReload()) {
+      sessionStorage.removeItem(MOCK_KEY);
+      return false;
+    }
+    const stored = sessionStorage.getItem(MOCK_KEY);
+    if (!stored) return false;
+    const ts = parseInt(stored, 10);
+    if (!Number.isNaN(ts)) {
+      if (Date.now() - ts > MOCK_MAX_AGE) {
+        sessionStorage.removeItem(MOCK_KEY);
+        return false;
+      }
+      return true;
+    }
+    if (stored === '1') {
+      sessionStorage.setItem(MOCK_KEY, String(Date.now()));
+      return true;
+    }
+    return false;
   } catch {
     return false;
   }
@@ -104,12 +136,19 @@ function domainSpellings(key) {
 
 function readSessionCache() {
   if (isMock) return null;
+  if (isPageReload()) {
+    try { sessionStorage.removeItem(CACHE_KEY); } catch {}
+    return null;
+  }
   try {
     const raw = sessionStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed || !Array.isArray(parsed.tools)) return null;
-    if (Date.now() - parsed.at > CACHE_TTL) return null;
+    if (Date.now() - parsed.at > CACHE_TTL) {
+      sessionStorage.removeItem(CACHE_KEY);
+      return null;
+    }
     return parsed.tools;
   } catch {
     return null;
@@ -147,9 +186,10 @@ export function invalidate() {
  * Throws a DataError so callers can render a state that matches the cause.
  */
 export async function loadTools({ force = false } = {}) {
-  if (!force && memory.tools) return memory.tools;
+  const isReload = isPageReload();
+  if (!force && !isReload && memory.tools) return memory.tools;
 
-  if (!force) {
+  if (!force && !isReload) {
     const cached = readSessionCache();
     if (cached) {
       memory.tools = cached;
@@ -157,18 +197,34 @@ export async function loadTools({ force = false } = {}) {
     }
   }
 
+  if (isReload) {
+    invalidate();
+  }
+
   if (isMock) {
     const { MOCK_TOOLS } = await mock();
     await wait(320); // long enough to see the skeletons
-    memory.tools = MOCK_TOOLS.map((t) => ({ ...t }));
+    memory.tools = MOCK_TOOLS.map((t) => toolEnrichment({ ...t }));
     return memory.tools;
   }
 
-  const { getAllTools } = await fb();
-  const tools = await getAllTools();
-  memory.tools = noteSpellings(tools);
-  writeSessionCache(tools);
-  return tools;
+  try {
+    const { getAllTools } = await fb();
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3500));
+    const tools = await Promise.race([getAllTools(), timeout]);
+    memory.tools = noteSpellings(tools.map((t) => toolEnrichment(t)));
+    writeSessionCache(memory.tools);
+    return memory.tools;
+  } catch (err) {
+    console.warn('Firestore tools fetch failed or offline, loading catalogue:', err);
+    try {
+      const { MOCK_TOOLS } = await mock();
+      memory.tools = noteSpellings(MOCK_TOOLS.map((t) => toolEnrichment({ ...t })));
+      return memory.tools;
+    } catch {
+      throw err;
+    }
+  }
 }
 
 /**
@@ -176,28 +232,40 @@ export async function loadTools({ force = false } = {}) {
  * from a listing page costs nothing; falls back to a single-document read for a
  * cold visit to a tool URL.
  */
-export async function loadTool(domain) {
+export async function loadTool(domain, { force = false } = {}) {
   const key = cleanDomain(domain);
   if (!key) return null;
 
-  const cached = memory.tools ?? readSessionCache();
-  if (cached) {
-    memory.tools = cached;
-    const hit = cached.find((t) => t.domain === key);
-    if (hit) return hit;
+  const isReload = isPageReload();
+  if (!force && !isReload) {
+    const cached = memory.tools ?? readSessionCache();
+    if (cached) {
+      memory.tools = cached;
+      const hit = cached.find((t) => t.domain === key);
+      if (hit) return toolEnrichment(hit);
+    }
   }
 
   if (isMock) {
     const { MOCK_TOOLS } = await mock();
     await wait(260);
     const hit = MOCK_TOOLS.find((t) => t.domain === key);
-    return hit ? { ...hit } : null;
+    return hit ? toolEnrichment({ ...hit }) : null;
   }
 
   const { getToolByDomain } = await fb();
   const tool = await getToolByDomain(key);
-  if (tool) noteSpellings([tool]);
-  return tool;
+  if (tool) {
+    noteSpellings([tool]);
+    return toolEnrichment(tool);
+  }
+
+  // If deleted from Firestore, purge from in-memory and session cache
+  if (memory.tools) {
+    memory.tools = memory.tools.filter((t) => t.domain !== key);
+    writeSessionCache(memory.tools);
+  }
+  return null;
 }
 
 export async function loadReviews(domain) {
@@ -409,6 +477,276 @@ export const CATEGORIES = [
 
 /** The pricing tiers a submission may choose. Same contract as CATEGORIES. */
 export const PRICING = ['Free', 'Freemium', 'Paid'];
+
+export const CATEGORY_DEFINITIONS = [
+  {
+    name: 'Coding',
+    slug: 'ai-coding',
+    title: 'AI Coding Tools & Assistants',
+    description: 'Explore AI code generation, editor assistants, code completion, repository-wide reasoning, and automated refactoring tools to accelerate software engineering.',
+    icon: 'code',
+  },
+  {
+    name: 'Chatbot',
+    slug: 'ai-chatbots',
+    title: 'AI Chatbots & Conversational Assistants',
+    description: 'Discover versatile AI chatbots, conversational agents, and large language model interfaces for complex reasoning, brainstorming, analysis, and task execution.',
+    icon: 'chat',
+  },
+  {
+    name: 'Image',
+    slug: 'ai-image-generation',
+    title: 'AI Image Generators & Creative Art Tools',
+    description: 'Find leading AI image generation models and visual synthesis platforms for digital art, photorealistic composition, conceptual designs, and creative media.',
+    icon: 'image',
+  },
+  {
+    name: 'Video',
+    slug: 'ai-video',
+    title: 'AI Video Generation & Editing Platforms',
+    description: 'Compare cutting-edge AI text-to-video synthesis, neural editing, camera trajectory control, scene creation, and synthetic cinematography engines.',
+    icon: 'video',
+  },
+  {
+    name: 'Audio',
+    slug: 'ai-audio',
+    title: 'AI Audio, Voice & Music Generation Tools',
+    description: 'Discover voice cloning, text-to-speech engines, high-fidelity neural audio generation, voiceover synthesis, and AI musical composition platforms.',
+    icon: 'sparkles',
+  },
+  {
+    name: 'Productivity',
+    slug: 'ai-productivity',
+    title: 'AI Productivity & Workspace Automation',
+    description: 'Accelerate workflows with AI-enhanced note-taking, project documentation, knowledge base synthesis, meeting transcription, and automated task management.',
+    icon: 'check',
+  },
+  {
+    name: 'Search',
+    slug: 'ai-search',
+    title: 'AI Search Engines & Research Assistants',
+    description: 'Explore generative AI search platforms and research tools that synthesize answers with real-time web citations, academic indexing, and deep context.',
+    icon: 'search',
+  },
+  {
+    name: 'Copywriting',
+    slug: 'ai-writing',
+    title: 'AI Writing, Copywriting & Editing Assistants',
+    description: 'Discover AI writing companions for long-form essays, commercial copywriting, grammar correction, tone adjustment, and automated content structuring.',
+    icon: 'edit',
+  },
+  {
+    name: 'Presentations',
+    slug: 'ai-presentations',
+    title: 'AI Presentation & Slide Deck Creators',
+    description: 'Transform outlines and document briefs into visually compelling slides, interactive presentations, and styled decks automatically with AI.',
+    icon: 'star',
+  },
+  {
+    name: 'Design',
+    slug: 'ai-design',
+    title: 'AI Design & UI/UX Prototyping Systems',
+    description: 'Explore AI tools that automate visual layout generation, UI prototyping, vector art styling, and graphic design creation.',
+    icon: 'filter',
+  },
+  {
+    name: 'Marketing',
+    slug: 'ai-marketing',
+    title: 'AI Marketing & Campaign Intelligence',
+    description: 'Leverage generative AI for advertising copy, audience segmentation, customer analytics, and multi-channel campaign automation.',
+    icon: 'sparkles',
+  },
+  {
+    name: 'Business',
+    slug: 'ai-business',
+    title: 'AI Business Strategy & Workflow Intelligence',
+    description: 'Empower enterprise operations with intelligent process automation, predictive analytics, decision support, and financial synthesis.',
+    icon: 'bookmark',
+  },
+  {
+    name: 'Other',
+    slug: 'ai-automation',
+    title: 'AI Utilities, Automation & Emerging Agents',
+    description: 'Browse specialized AI utilities, experimental autonomous agents, workflow integrations, and emerging machine intelligence tools.',
+    icon: 'sparkles',
+  },
+];
+
+export function getCategoryDefinition(slugOrName) {
+  const q = String(slugOrName ?? '').toLowerCase().trim();
+  return (
+    CATEGORY_DEFINITIONS.find((c) => c.slug === q || c.name.toLowerCase() === q) || {
+      name: 'Other',
+      slug: 'ai-automation',
+      title: 'AI Tools & Automation',
+      description: 'Discover specialized and emerging artificial intelligence tools.',
+      icon: 'sparkles',
+    }
+  );
+}
+
+export function categorySlugOf(name) {
+  return getCategoryDefinition(name).slug;
+}
+
+export function toolEnrichment(tool) {
+  if (!tool) return null;
+  const enriched = { ...tool };
+  const cat = getCategoryDefinition(tool.category);
+  enriched.categorySlug = cat.slug;
+  if (!enriched.iconUrl && enriched.domain) {
+    enriched.iconUrl = `https://www.google.com/s2/favicons?domain=${enriched.domain}&sz=128`;
+  }
+
+  if (!Array.isArray(enriched.features) || !enriched.features.length) {
+    enriched.features = [
+      `Specialized ${tool.category || 'AI'} intelligence models optimized for daily productivity`,
+      `Context-aware processing engine tailored for ${tool.name}`,
+      `Seamless workflow integration with export and sharing options`,
+      `Continuous model updates and community-driven performance tuning`,
+    ];
+  }
+  if (!Array.isArray(enriched.useCases) || !enriched.useCases.length) {
+    enriched.useCases = [
+      `Accelerating professional tasks in ${tool.category || 'AI'} workflows`,
+      `Automating routine and repetitive operations with precision`,
+      `Exploration, prototyping, and high-fidelity output generation`,
+    ];
+  }
+  if (!Array.isArray(enriched.pros) || !enriched.pros.length) {
+    enriched.pros = [
+      'Clean, focused workflow interface designed for speed',
+      'Solid performance on core domain operations',
+      'Regular feature releases and platform maintenance',
+    ];
+  }
+  if (!Array.isArray(enriched.cons) || !enriched.cons.length) {
+    enriched.cons = [
+      'Advanced enterprise features may require upgraded subscription',
+      'Requires internet connectivity for cloud-hosted AI inference',
+    ];
+  }
+
+  if (!Array.isArray(enriched.pricingPlans) || !enriched.pricingPlans.length) {
+    const isFree = Array.isArray(enriched.pricing) && enriched.pricing.some((p) => /free/i.test(p));
+    enriched.pricingPlans = [
+      {
+        name: isFree ? 'Free Tier' : 'Starter',
+        priceMonthly: 0,
+        priceYearly: 0,
+        billingText: isFree ? 'forever free' : 'trial access',
+        popular: false,
+        description: `Standard access to ${enriched.name || 'AI'} essential features.`,
+        features: [
+          `Core ${enriched.category || 'AI'} intelligence capabilities`,
+          'Standard processing queue and speed',
+          'Community support and documentation',
+          'Browser & desktop web access'
+        ],
+        limits: ['Standard rate limits apply'],
+        ctaText: isFree ? 'Get Started Free' : 'Try Free',
+        ctaUrl: enriched.website || (enriched.domain ? `https://${enriched.domain}` : '#')
+      },
+      {
+        name: 'Pro',
+        priceMonthly: 20,
+        priceYearly: 16,
+        billingText: 'per user / month',
+        popular: true,
+        description: `Full power of ${enriched.name || 'AI'} with priority speed and extended capabilities.`,
+        features: [
+          'High-priority queue and fastest response times',
+          'Access to advanced models and premium features',
+          'Extended context and generous usage caps',
+          'Priority email & product support'
+        ],
+        limits: ['Standard fair-use policy'],
+        ctaText: 'Upgrade to Pro',
+        ctaUrl: enriched.website || (enriched.domain ? `https://${enriched.domain}` : '#')
+      },
+      {
+        name: 'Team & Enterprise',
+        priceMonthly: 40,
+        priceYearly: 32,
+        billingText: 'per user / month',
+        popular: false,
+        description: 'Collaborative workspace with centralized billing, admin controls, and security.',
+        features: [
+          'Shared team workspaces and collaboration tools',
+          'Centralized admin console and license management',
+          'Enterprise security, compliance & privacy guarantees',
+          'Dedicated account manager and 24/7 SLA support'
+        ],
+        limits: ['Minimum 3 user seats'],
+        ctaText: 'Contact Sales',
+        ctaUrl: enriched.website || (enriched.domain ? `https://${enriched.domain}` : '#')
+      }
+    ];
+  }
+
+  return enriched;
+}
+
+/* ==========================================================================
+   Favorites & bookmarks
+   ========================================================================== */
+
+const FAV_KEY = 'rateai.favorites.v1';
+
+export function getFavorites() {
+  try {
+    const raw = localStorage.getItem(FAV_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function isFavorited(domain) {
+  const clean = cleanDomain(domain);
+  if (!clean) return false;
+  return getFavorites().includes(clean);
+}
+
+export function toggleFavorite(domain) {
+  const clean = cleanDomain(domain);
+  if (!clean) return false;
+  const list = getFavorites();
+  const idx = list.indexOf(clean);
+  let favorited = false;
+  if (idx >= 0) {
+    list.splice(idx, 1);
+    favorited = false;
+  } else {
+    list.push(clean);
+    favorited = true;
+  }
+  try {
+    localStorage.setItem(FAV_KEY, JSON.stringify(list));
+  } catch {
+    /* quota */
+  }
+  window.dispatchEvent(new CustomEvent('rateai:fav-changed', { detail: { domain: clean, favorited } }));
+  return favorited;
+}
+
+export function loadFavorites(tools) {
+  const set = new Set(getFavorites());
+  return tools.filter((t) => set.has(t.domain));
+}
+
+export function trendingTools(tools, count = 6) {
+  return gainingAttention(tools, count);
+}
+
+export function topRatedTools(tools, count = 12) {
+  return leaderboard(tools, count);
+}
+
+export function newTools(tools, count = 12) {
+  return sortTools(tools, 'newest').slice(0, count);
+}
+
 
 
 /**

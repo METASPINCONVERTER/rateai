@@ -25,10 +25,13 @@ import {
   faviconUrl,
   toolHref,
   exploreHref,
+  categoryHref,
   starFillPx,
   distributionRows,
   distributionIsPartial,
 } from './util.js';
+import { isFavorited, toggleFavorite } from './store.js';
+import { requireAuth } from './auth.js';
 
 /* ==========================================================================
    Stars — one person's rating, drawn as ink
@@ -131,9 +134,10 @@ export function scoreBlock(tool, { animate = true } = {}) {
  */
 export function toolMark(tool, size = '') {
   const sizeClass = size ? ` tool-mark-${size}` : '';
+  const icon = tool?.iconUrl || '';
   return (
-    `<span class="tool-mark${sizeClass}" data-mark="${esc(tool.domain)}">` +
-    `<span class="tool-mark-letter">${esc(initial(tool.name))}</span>` +
+    `<span class="tool-mark${sizeClass}" data-mark="${esc(tool?.domain || '')}"${icon ? ` data-icon-url="${escUrl(icon)}"` : ''}>` +
+    `<span class="tool-mark-letter">${esc(initial(tool?.name || ''))}</span>` +
     `</span>`
   );
 }
@@ -148,7 +152,7 @@ export function hydrateMarks(root = document) {
     holder.dataset.hydrated = '1';
     if (markFailures.has(domain)) return;
 
-    const url = faviconUrl(domain);
+    const url = holder.dataset.iconUrl || faviconUrl(domain);
     if (!url) return;
 
     const img = new Image();
@@ -236,6 +240,7 @@ export function toolCard(tool) {
         )}`
       : 'Write the first review') +
     `</a>` +
+    favoriteButton(tool) +
     `<a class="btn btn-ghost btn-sm btn-icon" href="${escUrl(tool.website)}" ` +
     `target="_blank" rel="noopener noreferrer" ` +
     `aria-label="Open ${esc(tool.name)} in a new tab" title="Open ${esc(tool.name)}">` +
@@ -314,16 +319,6 @@ export function distList(tool) {
   const rows = distributionRows(tool);
   const recorded = rows.reduce((acc, row) => acc + row.count, 0);
 
-  if (!recorded) {
-    return (
-      `<p class="t-small t-secondary">` +
-      (tool.totalRatings
-        ? 'The rating breakdown for this tool has not been recorded yet.'
-        : 'No ratings yet, so there is nothing to break down.') +
-      `</p>`
-    );
-  }
-
   const list =
     `<div class="dist">` +
     rows
@@ -342,6 +337,17 @@ export function distList(tool) {
       })
       .join('') +
     `</div>`;
+
+  if (!recorded) {
+    return (
+      list +
+      `<p class="t-small t-secondary" style="margin-top:var(--s-2)">` +
+      (tool.totalRatings
+        ? 'The rating breakdown for this tool has not been recorded yet.'
+        : 'No ratings yet, so there is nothing to break down.') +
+      `</p>`
+    );
+  }
 
   /* Being straight about incomplete data is the whole point of a ratings site. */
   if (distributionIsPartial(tool)) {
@@ -736,3 +742,147 @@ export function notice(message, { kind = '', title = '' } = {}) {
     `</div>`
   );
 }
+
+/* ==========================================================================
+   Discovery & rich category cards
+   ========================================================================== */
+
+export function favoriteButton(tool, { large = false } = {}) {
+  const isFav = isFavorited(tool?.domain);
+  const mark = isFav ? 'heartFilled' : 'heart';
+  if (large) {
+    return (
+      `<button class="btn btn-secondary btn-fav btn-fav-label${isFav ? ' is-fav' : ''}" type="button" ` +
+      `data-fav-tool="${esc(tool?.domain)}" aria-label="${isFav ? 'Remove from favorites' : 'Save to favorites'}">` +
+      icon(mark, 'ic ic-md') +
+      `<span class="btn-fav-text">${isFav ? 'Saved' : 'Save'}</span>` +
+      `</button>`
+    );
+  }
+  return (
+    `<button class="btn btn-ghost btn-sm btn-icon btn-fav${isFav ? ' is-fav' : ''}" type="button" ` +
+    `data-fav-tool="${esc(tool?.domain)}" aria-label="${isFav ? 'Remove from favorites' : 'Save to favorites'}">` +
+    icon(mark, 'ic ic-md') +
+    `</button>`
+  );
+}
+
+export function breadcrumbsMarkup(crumbs) {
+  const body = crumbs
+    .map((crumb, idx) => {
+      const isLast = idx === crumbs.length - 1;
+      const sep = idx > 0 ? '<span class="breadcrumb-sep">/</span>' : '';
+      if (isLast || !crumb.href) {
+        return `${sep}<span class="breadcrumb-item" aria-current="page">${esc(crumb.label)}</span>`;
+      }
+      return `${sep}<span class="breadcrumb-item"><a href="${esc(crumb.href)}">${esc(crumb.label)}</a></span>`;
+    })
+    .join('');
+  return `<nav class="breadcrumbs" aria-label="Breadcrumb">${body}</nav>`;
+}
+
+export function richCatCard(cat, toolCount = 0) {
+  const catIcon = cat.icon || 'sparkles';
+  return (
+    `<a class="cat-card-rich" href="${esc(categoryHref(cat.slug))}">` +
+    `<div class="cat-card-head">` +
+    `<span class="badge badge-accent">${icon(catIcon, 'ic ic-sm')} ${esc(cat.name)}</span>` +
+    `<span class="cat-card-count">${esc(formatCount(toolCount))} ${plural(toolCount, 'tool', 'tools')}</span>` +
+    `</div>` +
+    `<h3 class="cat-card-title">${esc(cat.title || cat.name)}</h3>` +
+    `<p class="cat-card-desc clamp-2">${esc(cat.description)}</p>` +
+    `<span class="section-action">Explore category ${icon('arrowRight', 'ic ic-sm')}</span>` +
+    `</a>`
+  );
+}
+
+export function richCatGrid(categories, countsMap = new Map()) {
+  return (
+    `<div class="cat-grid-rich">` +
+    categories.map((c) => richCatCard(c, countsMap.get(c.name) || countsMap.get(c.slug) || 0)).join('') +
+    `</div>`
+  );
+}
+
+export function toolFeaturesList(features) {
+  if (!Array.isArray(features) || !features.length) return '';
+  return (
+    `<div class="tool-features-list">` +
+    features
+      .map(
+        (f) =>
+          `<div class="tool-feature-item">` +
+          `<span class="tool-feature-icon">${icon('check', 'ic ic-md')}</span>` +
+          `<span>${esc(f)}</span>` +
+          `</div>`,
+      )
+      .join('') +
+    `</div>`
+  );
+}
+
+export function toolProsCons(pros, cons) {
+  const pList = Array.isArray(pros) ? pros : [];
+  const cList = Array.isArray(cons) ? cons : [];
+  if (!pList.length && !cList.length) return '';
+
+  return (
+    `<div class="tool-pros-cons">` +
+    `<div class="tool-pro-con-box">` +
+    `<h3 class="tool-pro-con-title tool-pro-list">${icon('check', 'ic ic-md')} Pros</h3>` +
+    `<div class="tool-pro-con-items">` +
+    pList.map((p) => `<div class="tool-pro-con-item"><span>+</span><span>${esc(p)}</span></div>`).join('') +
+    `</div>` +
+    `</div>` +
+    `<div class="tool-pro-con-box">` +
+    `<h3 class="tool-pro-con-title tool-con-list">${icon('alertCircle', 'ic ic-md')} Considerations</h3>` +
+    `<div class="tool-pro-con-items">` +
+    cList.map((c) => `<div class="tool-pro-con-item"><span>−</span><span>${esc(c)}</span></div>`).join('') +
+    `</div>` +
+    `</div>` +
+    `</div>`
+  );
+}
+
+export function toolUseCases(useCases) {
+  if (!Array.isArray(useCases) || !useCases.length) return '';
+  return (
+    `<div class="tool-usecases-grid">` +
+    useCases
+      .map(
+        (u) =>
+          `<div class="tool-usecase-card">` +
+          `<b>Use case:</b> ${esc(u)}` +
+          `</div>`,
+      )
+      .join('') +
+    `</div>`
+  );
+}
+
+export function hydrateFavButtons(root = document, { requireAuth = null } = {}) {
+  root.querySelectorAll('[data-fav-tool]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const domain = btn.getAttribute('data-fav-tool');
+      if (!domain) return;
+      const doToggle = () => {
+        const favorited = toggleFavorite(domain);
+        btn.classList.toggle('is-fav', favorited);
+        btn.setAttribute('aria-label', favorited ? 'Remove from favorites' : 'Save to favorites');
+        if (btn.classList.contains('btn-fav-label')) {
+          btn.innerHTML = `${icon(favorited ? 'heartFilled' : 'heart', 'ic ic-md')}<span class="btn-fav-text">${favorited ? 'Saved' : 'Save'}</span>`;
+        } else {
+          btn.innerHTML = icon(favorited ? 'heartFilled' : 'heart', 'ic ic-md');
+        }
+      };
+      if (typeof requireAuth === 'function') {
+        requireAuth('Save this tool to your favorites', doToggle);
+      } else {
+        doToggle();
+      }
+    });
+  });
+}
+

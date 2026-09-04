@@ -23,19 +23,7 @@ import {
 
 initShell({ isMock });
 
-const el = {
-  form: document.querySelector('[data-submit-form]'),
-  name: document.querySelector('#tl-name'),
-  domain: document.querySelector('#tl-domain'),
-  category: document.querySelector('#tl-category'),
-  description: document.querySelector('#tl-description'),
-  descriptionCount: document.querySelector('[data-description-count]'),
-  company: document.querySelector('#tl-company'),
-  founded: document.querySelector('#tl-founded'),
-  submit: document.querySelector('[data-submit-tool]'),
-  preview: document.querySelector('[data-preview]'),
-  done: document.querySelector('[data-done]'),
-};
+const el = {};
 
 const FIELDS = ['name', 'domain', 'category', 'description', 'founded'];
 const DESCRIPTION_MIN = 20;
@@ -44,7 +32,20 @@ const thisYear = new Date().getFullYear();
 
 let tools = [];
 
-el.founded.max = String(thisYear);
+function queryElements() {
+  el.form = document.querySelector('[data-submit-form]');
+  el.name = document.querySelector('#tl-name');
+  el.domain = document.querySelector('#tl-domain');
+  el.category = document.querySelector('#tl-category');
+  el.description = document.querySelector('#tl-description');
+  el.descriptionCount = document.querySelector('[data-description-count]');
+  el.company = document.querySelector('#tl-company');
+  el.founded = document.querySelector('#tl-founded');
+  el.submit = document.querySelector('[data-submit-tool]');
+  el.preview = document.querySelector('[data-preview]');
+  el.done = document.querySelector('[data-done]');
+  if (el.founded) el.founded.max = String(thisYear);
+}
 
 /* ==========================================================================
    Errors
@@ -344,4 +345,11 @@ async function start() {
   }
 }
 
-start();
+export function initPage() {
+  queryElements();
+  if (el.form) {
+    start();
+  }
+}
+
+initPage();

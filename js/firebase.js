@@ -26,6 +26,13 @@ import {
   runTransaction,
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  onAuthStateChanged,
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
 /* A Firebase web config is a set of public client identifiers, not a secret. */
 const firebaseConfig = {
@@ -41,6 +48,39 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+export const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('profile');
+googleProvider.addScope('email');
+
+export async function signInWithGoogle() {
+  assertOnline();
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    return result.user;
+  } catch (error) {
+    if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function signOutUser() {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    throw classify(error, 'Failed to sign out.');
+  }
+}
+
+export function onAuthChange(callback) {
+  return onAuthStateChanged(auth, callback);
+}
+
+export function getCurrentUser() {
+  return auth.currentUser;
+}
 
 /* ==========================================================================
    Typed errors, so the interface can say what actually went wrong instead of
@@ -97,8 +137,30 @@ function shapeTool(docSnap) {
     verified: Boolean(data.verified),
     founded: data.founded || null,
     twitter: data.twitter || null,
+    iconUrl: data.iconUrl || (domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128` : ''),
     createdAt: data.createdAt || null,
     updatedAt: data.updatedAt || null,
+
+    // Rich fields loaded directly from Firestore
+    longDescription: (docSnap.data() || {})['longDescription'] || data.description || '',
+    features: Array.isArray((docSnap.data() || {})['features']) ? (docSnap.data() || {})['features'] : [],
+    pros: Array.isArray((docSnap.data() || {})['pros']) ? (docSnap.data() || {})['pros'] : [],
+    cons: Array.isArray((docSnap.data() || {})['cons']) ? (docSnap.data() || {})['cons'] : [],
+    useCases: Array.isArray((docSnap.data() || {})['useCases']) ? (docSnap.data() || {})['useCases'] : [],
+    tags: Array.isArray((docSnap.data() || {})['tags']) ? (docSnap.data() || {})['tags'] : Array.isArray((docSnap.data() || {})['seoKeywords']) ? (docSnap.data() || {})['seoKeywords'] : [],
+    seoKeywords: Array.isArray((docSnap.data() || {})['seoKeywords']) ? (docSnap.data() || {})['seoKeywords'] : Array.isArray((docSnap.data() || {})['tags']) ? (docSnap.data() || {})['tags'] : [],
+    whatsNew: (docSnap.data() || {})['whatsNew'] || '',
+    howItWorks: (docSnap.data() || {})['howItWorks'] || '',
+    dataSafety: (docSnap.data() || {})['dataSafety'] || null,
+    developerHQ: (docSnap.data() || {})['developerHQ'] || '',
+    platforms: Array.isArray((docSnap.data() || {})['platforms']) ? (docSnap.data() || {})['platforms'] : ['Web'],
+    downloadsOrUsers: (docSnap.data() || {})['downloadsOrUsers'] || '',
+    contentRating: (docSnap.data() || {})['contentRating'] || '',
+    pricingPlans: Array.isArray((docSnap.data() || {})['pricingPlans']) ? (docSnap.data() || {})['pricingPlans'] : [],
+    pricingOverview: (docSnap.data() || {})['pricingOverview'] || '',
+    officialPricingUrl: (docSnap.data() || {})['officialPricingUrl'] || '',
+    startingPrice: typeof (docSnap.data() || {})['startingPrice'] === 'number' ? (docSnap.data() || {})['startingPrice'] : null,
+    hasFreeTier: Boolean((docSnap.data() || {})['hasFreeTier']),
   };
 }
 
@@ -112,6 +174,7 @@ function shapeReview(docSnap) {
     body: data.body || '',
     userName: data.userName || 'Anonymous',
     userPhoto: data.userPhoto || '',
+    uid: data.uid || null,
     likes: parseInt(data.likes, 10) || 0,
     createdAt: data.createdAt || null,
   };
@@ -264,10 +327,12 @@ export async function submitReviewToFirestore({
   body,
   userName,
   userPhoto,
+  uid,
 }) {
   assertOnline();
   const domain = String(toolDomain ?? '').trim().toLowerCase();
   const stars = Math.min(5, Math.max(1, parseInt(rating, 10) || 5));
+  const user = auth.currentUser;
 
   try {
     const review = {
@@ -275,12 +340,13 @@ export async function submitReviewToFirestore({
       rating: stars,
       title: String(title ?? '').trim(),
       body: String(body ?? '').trim(),
-      userName: String(userName ?? '').trim() || 'Anonymous',
+      userName: String(userName ?? user?.displayName ?? '').trim() || 'Anonymous',
+      uid: user?.uid || uid || null,
       likes: 0,
       createdAt: serverTimestamp(),
     };
     /* Only stored when supplied — the interface generates avatars locally. */
-    if (userPhoto) review.userPhoto = userPhoto;
+    if (userPhoto || user?.photoURL) review.userPhoto = userPhoto || user.photoURL;
 
     const docRef = await addDoc(collection(db, 'reviews'), review);
 

@@ -40,6 +40,7 @@ const MIME = {
   '.json': 'application/json; charset=utf-8',
   '.map': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml',
+  '.xml': 'application/xml; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
@@ -106,22 +107,57 @@ const server = createServer(async (req, res) => {
   const { pathname } = new URL(req.url, `http://localhost:${PORT}`);
 
   try {
-    const isReviewRoute = /^\/(?:reviewe|review|reviews)(?:\/.*)?$/i.test(pathname);
-
-    // If static assets were requested under /reviewe/... (fallback for relative asset requests)
-    let targetPath = pathname === '/' ? '/index.html' : pathname;
-    if (isReviewRoute && /\.(?:css|js|mjs|svg|png|jpg|jpeg|webp|ico|woff2|json)$/i.test(pathname)) {
-      targetPath = pathname.replace(/^\/(?:reviewe|review|reviews)\/[^/]+/, '');
+    // Legacy 301 redirects
+    if (/^\/(?:reviewe|reviews|tools)(?:\/(.*))?$/i.test(pathname)) {
+      const rest = pathname.replace(/^\/(?:reviewe|reviews|tools)\/?/i, '');
+      res.writeHead(301, {
+        Location: `/review/${rest}`,
+        'Cache-Control': 'no-store',
+      });
+      res.end();
+      return;
+    }
+    if (/^\/(?:categories|category|trending|top-rated|search)(?:\.html)?(?:\/.*)?$/i.test(pathname)) {
+      res.writeHead(301, {
+        Location: `/explore.html`,
+        'Cache-Control': 'no-store',
+      });
+      res.end();
+      return;
     }
 
+    // Strip tool/category prefix only if static assets (css, js, icons) were requested relatively
+    let targetPath = pathname === '/' ? '/index.html' : pathname;
+    if (/^\/(?:tools|reviewe|review|reviews|category)\/[^/]+\/(?:css|js|icons)\//i.test(pathname)) {
+      targetPath = pathname.replace(/^\/(?:tools|reviewe|review|reviews|category)\/[^/]+/, '');
+    }
+
+    // Attempt to resolve file directly (including static tool pages under /review/<slug>/index.html)
     const file = await resolve(targetPath);
     if (file) {
       send(res, 200, file, { head });
       return;
     }
 
-    // Review route: serve tool.html
-    if (isReviewRoute) {
+    const isToolRoute = /^\/(?:tools|reviewe|review|reviews)\/([^/.]+)\/?$/i.test(pathname);
+    const isCategoryRoute = /^\/category\/([^/.]+)\/?$/i.test(pathname);
+
+    // Category route: serve category.html
+    if (isCategoryRoute) {
+      const catPage = join(ROOT, 'category.html');
+      try {
+        const stats = await stat(catPage);
+        if (stats.isFile()) {
+          send(res, 200, catPage, { head });
+          return;
+        }
+      } catch {
+        /* proceed */
+      }
+    }
+
+    // Tool/Review route: serve tool.html
+    if (isToolRoute) {
       const toolPage = join(ROOT, 'tool.html');
       try {
         const stats = await stat(toolPage);

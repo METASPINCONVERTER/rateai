@@ -599,6 +599,12 @@ legend.field-label {
   border-color: var(--border-strong);
 }
 
+.badge-accent {
+  background: var(--accent-wash);
+  border-color: var(--accent-border);
+  color: var(--accent-text);
+}
+
 .badge-count {
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
@@ -1849,3 +1855,813 @@ legend.field-label {
 .skel-row:first-child {
   border-top: none;
 }
+
+/* ==========================================================================
+   Modals & dialogs
+   ========================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--scrim);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: var(--s-4);
+}
+
+.modal-backdrop[hidden] {
+  display: none !important;
+}
+
+.modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: dialog-appear var(--dur-fast) var(--ease);
+}
+
+@keyframes dialog-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-dialog {
+    animation: none;
+  }
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+  font-size: var(--t-h3);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-h3);
+  color: var(--text-primary);
+}
+
+.modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch);
+  height: var(--touch);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.modal-close:hover {
+  background: var(--surface-subtle);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: var(--s-5);
+}
+
+.modal-sub {
+  margin-top: calc(var(--s-2) * -1);
+  margin-bottom: var(--s-4);
+  font-size: var(--t-small);
+  line-height: var(--lh-normal);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* --- Auth components ---------------------------------------------------- */
+
+.auth-icon-badge {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--s-3);
+}
+
+.btn-google-auth {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  font-weight: var(--fw-medium);
+  font-size: var(--t-body);
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-control);
+  min-height: var(--touch);
+  border-radius: var(--r-md);
+  padding: var(--s-3) var(--s-5);
+  width: 100%;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+
+.btn-google-auth:hover {
+  background: var(--surface-subtle);
+  border-color: var(--text-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.auth-security-note {
+  margin-top: var(--s-4);
+  text-align: center;
+}
+
+.auth-error {
+  padding: var(--s-2) var(--s-3);
+  background: var(--surface-subtle);
+  border-left: 3px solid var(--negative);
+  border-radius: var(--r-sm);
+  color: var(--negative);
+  font-size: var(--t-small);
+  line-height: var(--lh-normal);
+  margin-bottom: var(--s-3);
+}
+
+/* ==========================================================================
+   User menu in nav
+   ========================================================================== */
+
+.nav-auth-label {
+  font-size: var(--t-small);
+  font-weight: var(--fw-medium);
+}
+
+.user-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.user-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: var(--touch);
+  padding: 0 var(--s-3);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.user-menu-trigger:hover {
+  background: var(--surface-sunken);
+  border-color: var(--border-strong);
+}
+
+.avatar-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: var(--t-meta);
+  font-weight: var(--fw-semibold);
+  overflow: hidden;
+}
+
+.avatar-sm img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-menu-name {
+  font-size: var(--t-small);
+  font-weight: var(--fw-medium);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + var(--s-2));
+  right: 0;
+  width: 240px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.user-dropdown-head {
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface-subtle);
+  border-bottom: 1px solid var(--border);
+}
+
+.user-dropdown-name {
+  font-size: var(--t-small);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-dropdown-email {
+  font-size: var(--t-meta);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-dropdown-links {
+  display: grid;
+  padding: var(--s-1) 0;
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: 100%;
+  min-height: var(--touch);
+  padding: var(--s-2) var(--s-4);
+  background: transparent;
+  border: none;
+  font-size: var(--t-small);
+  color: var(--text-primary);
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease);
+}
+
+.user-dropdown-item:hover {
+  background: var(--surface-subtle);
+}
+
+.btn-signout {
+  color: var(--negative);
+  border-top: 1px solid var(--border);
+}
+
+/* ==========================================================================
+   Favorites & bookmarks
+   ========================================================================== */
+
+.btn-fav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch);
+  min-width: var(--touch);
+  padding: 0 var(--s-2);
+  background: var(--surface);
+  border: 1px solid var(--border-control);
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.btn-fav:hover {
+  background: var(--surface-subtle);
+  color: var(--negative);
+}
+
+.btn-fav.is-fav {
+  background: var(--negative-wash);
+  border-color: var(--negative);
+  color: var(--negative);
+}
+
+.btn-fav-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0 var(--s-4);
+  font-size: var(--t-small);
+  font-weight: var(--fw-medium);
+}
+
+.btn-fav-text {
+  font-size: var(--t-small);
+  font-weight: var(--fw-medium);
+}
+
+/* ==========================================================================
+   Breadcrumbs
+   ========================================================================== */
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-4);
+  font-size: var(--t-small);
+  color: var(--text-muted);
+}
+
+.breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb-item a {
+  color: var(--text-secondary);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--accent-text);
+}
+
+.breadcrumb-item[aria-current="page"] {
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.breadcrumb-sep {
+  display: inline-flex;
+  color: var(--border-control);
+  user-select: none;
+}
+
+
+
+/* ==========================================================================
+   Category cards & rich categories
+   ========================================================================== */
+
+.cat-grid-rich {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+  gap: var(--s-4);
+}
+
+.cat-card-rich {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.cat-card-rich:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.cat-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-bottom: var(--s-2);
+}
+
+.cat-card-title {
+  font-size: var(--t-h3);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-h3);
+  color: var(--text-primary);
+}
+
+.cat-card-desc {
+  font-size: var(--t-small);
+  line-height: var(--lh-normal);
+  color: var(--text-secondary);
+  margin-bottom: var(--s-4);
+}
+
+.cat-card-count {
+  font-size: var(--t-meta);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Tool detail rich sections (Features, Pros/Cons, Use cases)
+   ========================================================================== */
+
+.tool-features-list {
+  display: grid;
+  gap: var(--s-3);
+  margin: var(--s-4) 0;
+}
+
+.tool-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  font-size: var(--t-body);
+  line-height: var(--lh-normal);
+  color: var(--text-primary);
+}
+
+.tool-feature-icon {
+  flex: none;
+  margin-top: 2px;
+  color: var(--positive);
+}
+
+.tool-pros-cons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  gap: var(--s-5);
+  margin: var(--s-5) 0;
+}
+
+.tool-pro-con-box {
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.tool-pro-con-title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+  font-size: var(--t-h3);
+  font-weight: var(--fw-semibold);
+}
+
+.tool-pro-list {
+  color: var(--positive);
+}
+
+.tool-con-list {
+  color: var(--caution);
+}
+
+.tool-pro-con-items {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.tool-pro-con-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  font-size: var(--t-small);
+  line-height: var(--lh-normal);
+  color: var(--text-secondary);
+}
+
+.tool-usecases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  gap: var(--s-4);
+  margin: var(--s-4) 0;
+}
+
+.tool-usecase-card {
+  padding: var(--s-4);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: var(--t-small);
+  line-height: var(--lh-normal);
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   Static business pages (About, Privacy, Terms, etc.)
+   ========================================================================== */
+
+.prose-page {
+  max-width: 768px;
+  margin: var(--s-7) auto var(--s-9) auto;
+}
+
+.prose-section {
+  margin-top: var(--s-7);
+}
+
+.prose-title {
+  margin-bottom: var(--s-3);
+  font-size: var(--t-h2);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-h2);
+  color: var(--text-primary);
+}
+
+.prose-body {
+  font-size: var(--t-body);
+  line-height: var(--lh-prose);
+  color: var(--text-secondary);
+}
+
+.prose-body p + p {
+  margin-top: var(--s-4);
+}
+
+.prose-list {
+  display: grid;
+  gap: var(--s-2);
+  margin: var(--s-4) 0;
+  padding-left: var(--s-5);
+}
+
+.prose-list li {
+  line-height: var(--lh-prose);
+}
+
+/* ==========================================================================
+   Play Store Style App Details
+   ========================================================================== */
+
+.playstore-dev {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--t-small);
+  color: var(--text-secondary);
+  margin-top: var(--s-1);
+}
+
+.playstore-dev-link {
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.playstore-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  padding: var(--s-4) 0;
+  margin: var(--s-4) 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.playstore-stats-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.playstore-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: none;
+  min-width: 96px;
+  position: relative;
+}
+
+.playstore-stat-item + .playstore-stat-item::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--s-3) * -1);
+  top: 15%;
+  height: 70%;
+  width: 1px;
+  background: var(--border);
+}
+
+.playstore-stat-val {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  font-size: var(--t-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.playstore-stat-sub {
+  font-size: var(--t-meta);
+  color: var(--text-muted);
+  margin-top: var(--s-1);
+}
+
+.playstore-gallery {
+  display: flex;
+  gap: var(--s-4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: var(--s-2) 0 var(--s-4) 0;
+  margin: var(--s-4) 0;
+  scrollbar-width: thin;
+}
+
+.playstore-card {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.playstore-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+
+.playstore-card-preview {
+  height: 140px;
+  background: var(--surface-subtle);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--s-3);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.playstore-card-badge {
+  position: absolute;
+  top: var(--s-2);
+  left: var(--s-2);
+  font-size: 0.6875rem;
+  font-weight: var(--fw-semibold);
+  padding: 2px var(--s-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+}
+
+.playstore-card-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--accent);
+  margin-bottom: var(--s-2);
+}
+
+.playstore-card-title {
+  font-size: var(--t-small);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin-top: var(--s-1);
+}
+
+.playstore-card-desc {
+  font-size: var(--t-meta);
+  line-height: var(--lh-normal);
+  color: var(--text-secondary);
+}
+
+.playstore-datasafety {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--s-5);
+  margin: var(--s-4) 0;
+}
+
+.playstore-datasafety-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+
+.playstore-datasafety-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  background: var(--surface-subtle);
+  border-radius: var(--r-sm);
+  font-size: var(--t-small);
+  line-height: var(--lh-normal);
+}
+
+.playstore-datasafety-icon {
+  color: var(--positive);
+  flex: none;
+  margin-top: 2px;
+}
+
+.playstore-whatsnew {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--s-5);
+  margin: var(--s-4) 0;
+}
+
+.playstore-whatsnew-badge {
+  display: inline-block;
+  font-size: var(--t-meta);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-text);
+  margin-bottom: var(--s-2);
+}
+
+.playstore-specs {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--s-5);
+  margin: var(--s-4) 0;
+}
+
+.playstore-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--s-4);
+  margin-top: var(--s-3);
+}
+
+.playstore-spec-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.playstore-spec-label {
+  font-size: var(--t-meta);
+  color: var(--text-muted);
+}
+
+.playstore-spec-val {
+  font-size: var(--t-small);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.playstore-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: var(--s-3) 0 var(--s-5) 0;
+}
+
+.playstore-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: var(--s-1) var(--s-3);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-size: var(--t-meta);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.playstore-tag:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.playstore-how-it-works {
+  margin-top: var(--s-5);
+}
+

@@ -271,7 +271,7 @@ export function toolHref(domain, name = '') {
   }
 
   const slug = toolSlug(d, n);
-  return `/reviewe/${slug}/`;
+  return `/review/${slug}/`;
 }
 
 export function exploreHref(params = {}) {
@@ -292,17 +292,32 @@ export function compareHref(a, b) {
   return s ? `compare.html?${s}` : 'compare.html';
 }
 
+export function categoryHref(slugOrName) {
+  const s = slugify(slugOrName);
+  if (typeof window !== 'undefined' && window.location?.protocol === 'file:') {
+    return `category.html?c=${encodeURIComponent(s)}`;
+  }
+  return `/category/${s}`;
+}
+
+export function searchHref(query = '') {
+  const q = String(query ?? '').trim();
+  return q ? `search.html?q=${encodeURIComponent(q)}` : 'search.html';
+}
+
+export function favoritesHref() {
+  return 'favorites.html';
+}
+
 /**
- * The submission form, optionally prefilled. Used wherever a reader has just
- * looked for something that is not listed — the search they typed is the best
- * guess at the name, and a missing tool page already knows the domain.
+ * The submission form, optionally prefilled.
  */
 export function submitHref({ domain = '', name = '' } = {}) {
   const q = new URLSearchParams();
   if (domain) q.set('domain', cleanDomain(domain));
   if (name) q.set('name', String(name).trim());
   const s = q.toString();
-  return s ? `submit.html?${s}` : 'submit.html';
+  return s ? `search.html?q=${encodeURIComponent(name || domain)}` : 'search.html';
 }
 
 export function getParams() {

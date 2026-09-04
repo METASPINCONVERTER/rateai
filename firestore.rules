@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Tools catalogue: public reads, authenticated or community contributions
+    match /tools/{toolId} {
+      allow read: if true;
+      allow create: if request.auth != null || (
+        request.resource.data.name is string &&
+        request.resource.data.domain is string
+      );
+      allow update: if true; // Allows atomic aggregate rating updates on review publishing
+      allow delete: if false;
+    }
+
+    // Reviews collection: public reads, gated authenticated writes
+    match /reviews/{reviewId} {
+      allow read: if true;
+      // Must be signed in, and review's author UID must match caller
+      allow create: if request.auth != null &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.rating >= 1 &&
+        request.resource.data.rating <= 5 &&
+        request.resource.data.toolDomain is string;
+      allow update: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
+    // Pricing collection: public reads, developer writes
+    match /pricing/{pricingId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

@@ -203,8 +203,8 @@ function initFooterYear() {
 }
 
 /** Renders the icons the static shell markup asks for by name. */
-function initShellIcons() {
-  document.querySelectorAll('[data-icon]').forEach((slot) => {
+export function initShellIcons(root = document) {
+  root.querySelectorAll('[data-icon]').forEach((slot) => {
     const name = slot.dataset.icon;
     const size = slot.dataset.iconSize ? ` ic-${slot.dataset.iconSize}` : '';
     slot.innerHTML = icon(name, `ic${size}`);
@@ -238,10 +238,10 @@ function initModeNotice(isMock) {
   if (!host) return;
   host.hidden = false;
   host.innerHTML =
-    `<span class="notice-icon">${icon('info', 'ic ic-md')}</span>` +
+    `<span class="notice-icon">${icon('alertTriangle', 'ic ic-md')}</span>` +
     `<span><b class="notice-title">Sample data</b>` +
-    `This page is showing built-in example tools, not the live catalogue. ` +
-    `<a class="link" href="${esc(stripMock())}">Load live data</a>.</span>`;
+    `You're viewing sample data, not the live catalogue. ` +
+    `<a class="link" href="${esc(stripMock())}">Switch to live data</a>.</span>`;
 }
 
 function stripMock() {
@@ -250,12 +250,473 @@ function stripMock() {
   return url.pathname + url.search;
 }
 
+/* ==========================================================================
+   Ambient Background Animation Canvas
+   Features:
+   - Dynamic floating dots & connecting constellation lines
+   - Flowing ambient wave lines
+   - Interactive mouse tracking, particle attraction/repulsion & glow
+   - Adaptive color palettes reflecting the site's top brand colors (--accent)
+   ========================================================================== */
+
+function parseHex(hex) {
+  const clean = String(hex || '').replace(/[^0-9a-f]/gi, '');
+  if (clean.length === 3) {
+    return [
+      parseInt(clean[0] + clean[0], 16) || 0,
+      parseInt(clean[1] + clean[1], 16) || 0,
+      parseInt(clean[2] + clean[2], 16) || 0,
+    ];
+  }
+  return [
+    parseInt(clean.slice(0, 2), 16) || 0,
+    parseInt(clean.slice(2, 4), 16) || 0,
+    parseInt(clean.slice(4, 6), 16) || 0,
+  ];
+}
+
+function toColor(rgb, alpha) {
+  return ['rgb', 'a(', rgb[0], ',', rgb[1], ',', rgb[2], ',', alpha, ')'].join('');
+}
+
+function initBackgroundCanvas() {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  if (document.getElementById('bg-canvas')) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.id = 'bg-canvas';
+  canvas.className = 'bg-canvas';
+  canvas.setAttribute('aria-hidden', 'true');
+  document.body.prepend(canvas);
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let particles = [];
+  let animId = null;
+  let isVisible = !document.hidden;
+
+  const mouse = {
+    x: -9999,
+    y: -9999,
+    targetX: -9999,
+    targetY: -9999,
+    active: false,
+    radius: 160,
+  };
+
+  const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+
+  function getThemeColors() {
+    const style = getComputedStyle(document.documentElement);
+    const accentHex = style.getPropertyValue('--accent').trim();
+    const isDark =
+      document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') &&
+        window.matchMedia?.('(prefers-color-scheme: dark)')?.matches);
+
+    const rgb = parseHex(accentHex);
+
+    return {
+      isDark,
+      rgb,
+    };
+  }
+
+  let colors = getThemeColors();
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    initParticles();
+  }
+
+  function initParticles() {
+    particles = [];
+    const count = Math.max(26, Math.min(75, Math.floor((width * height) / 22000)));
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * (prefersReduced ? 0.05 : 0.55),
+        vy: (Math.random() - 0.5) * (prefersReduced ? 0.05 : 0.55),
+        baseRadius: 1.3 + Math.random() * 1.5,
+        pulseOffset: Math.random() * Math.PI * 2,
+        alpha: 0.35 + Math.random() * 0.45,
+      });
+    }
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    mouse.targetX = e.clientX;
+    mouse.targetY = e.clientY;
+    mouse.active = true;
+  }, { passive: true });
+
+  window.addEventListener('mouseleave', () => {
+    mouse.active = false;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches[0]) {
+      mouse.targetX = e.touches[0].clientX;
+      mouse.targetY = e.touches[0].clientY;
+      mouse.active = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    mouse.active = false;
+  }, { passive: true });
+
+  const observer = new MutationObserver(() => {
+    colors = getThemeColors();
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  window.matchMedia?.('(prefers-color-scheme: dark)')?.addEventListener('change', () => {
+    colors = getThemeColors();
+  });
+
+  let waveTime = 0;
+  function drawMovingWaves() {
+    waveTime += 0.003;
+    const waveCount = 2;
+    const waveAlpha = colors.isDark ? 0.045 : 0.03;
+
+    for (let w = 0; w < waveCount; w++) {
+      ctx.beginPath();
+      const offset = (w * Math.PI) / 2;
+      const waveYBase = height * (0.35 + w * 0.3);
+
+      ctx.moveTo(0, waveYBase + Math.sin(waveTime + offset) * 35);
+
+      for (let x = 0; x <= width; x += 45) {
+        const y =
+          waveYBase +
+          Math.sin(x * 0.0022 + waveTime * 1.2 + offset) * 38 +
+          Math.cos(x * 0.0014 - waveTime * 0.8) * 22;
+        ctx.lineTo(x, y);
+      }
+
+      ctx.strokeStyle = toColor(colors.rgb, waveAlpha);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  function render(time) {
+    if (!isVisible) return;
+
+    ctx.clearRect(0, 0, width, height);
+
+    if (mouse.active) {
+      mouse.x += (mouse.targetX - mouse.x) * 0.18;
+      mouse.y += (mouse.targetY - mouse.y) * 0.18;
+    } else {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    }
+
+    drawMovingWaves();
+
+    const maxDist = 135;
+    const maxDistSq = maxDist * maxDist;
+    const mouseRadiusSq = mouse.radius * mouse.radius;
+    const len = particles.length;
+    const isDark = colors.isDark;
+
+    for (let i = 0; i < len; i++) {
+      const p1 = particles[i];
+
+      if (!prefersReduced) {
+        p1.x += p1.vx;
+        p1.y += p1.vy;
+
+        if (p1.x < 0) { p1.x = 0; p1.vx *= -1; }
+        else if (p1.x > width) { p1.x = width; p1.vx *= -1; }
+        if (p1.y < 0) { p1.y = 0; p1.vy *= -1; }
+        else if (p1.y > height) { p1.y = height; p1.vy *= -1; }
+
+        if (mouse.active) {
+          const mdx = p1.x - mouse.x;
+          const mdy = p1.y - mouse.y;
+          const mDistSq = mdx * mdx + mdy * mdy;
+          if (mDistSq < mouseRadiusSq && mDistSq > 1) {
+            const mDist = Math.sqrt(mDistSq);
+            const force = (1 - mDist / mouse.radius) * 0.75;
+            p1.x += (mdx / mDist) * force;
+            p1.y += (mdy / mDist) * force;
+          }
+        }
+      }
+
+      for (let j = i + 1; j < len; j++) {
+        const p2 = particles[j];
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq < maxDistSq) {
+          const dist = Math.sqrt(distSq);
+          const lineAlpha = (1 - dist / maxDist) * (isDark ? 0.35 : 0.28);
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = toColor(colors.rgb, lineAlpha.toFixed(3));
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+
+      if (mouse.active) {
+        const mdx = p1.x - mouse.x;
+        const mdy = p1.y - mouse.y;
+        const mDistSq = mdx * mdx + mdy * mdy;
+        if (mDistSq < mouseRadiusSq) {
+          const mDist = Math.sqrt(mDistSq);
+          const mouseLineAlpha = (1 - mDist / mouse.radius) * (isDark ? 0.6 : 0.45);
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = toColor(colors.rgb, mouseLineAlpha.toFixed(3));
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        }
+      }
+
+      const pulse = Math.sin(time * 0.003 + p1.pulseOffset);
+      const currentRadius = p1.baseRadius + pulse * 0.35;
+      const dotAlpha = p1.alpha + pulse * 0.12;
+
+      ctx.beginPath();
+      ctx.arc(p1.x, p1.y, currentRadius * 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = toColor(colors.rgb, isDark ? 0.22 : 0.12);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(p1.x, p1.y, currentRadius, 0, Math.PI * 2);
+      ctx.fillStyle = toColor(colors.rgb, dotAlpha.toFixed(3));
+      ctx.fill();
+    }
+
+    if (mouse.active && mouse.x > 0 && mouse.y > 0) {
+      const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 32);
+      grad.addColorStop(0, toColor(colors.rgb, isDark ? 0.45 : 0.32));
+      grad.addColorStop(1, ['rgb', 'a(0,0,0,0)'].join(''));
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, 32, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = toColor(colors.rgb, 0.85);
+      ctx.fill();
+    }
+
+    if (!prefersReduced) {
+      animId = requestAnimationFrame(render);
+    }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    isVisible = !document.hidden;
+    if (isVisible && !prefersReduced) {
+      cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(render);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    resize();
+  }, { passive: true });
+
+  resize();
+  animId = requestAnimationFrame(render);
+}
+
+/* ==========================================================================
+   SPA Router — Persistent layout, seamless content swap
+   ========================================================================== */
+
+function initRouter() {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  async function runPageHandler(pathname) {
+    const norm = pathname.replace(/^\//, '').toLowerCase();
+    try {
+      if (norm === '' || norm === 'index.html') {
+        const mod = await import('./pages/home.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === 'explore' || norm === 'explore.html') {
+        const mod = await import('./pages/explore.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === 'compare' || norm === 'compare.html') {
+        const mod = await import('./pages/compare.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === 'submit' || norm === 'submit.html') {
+        const mod = await import('./pages/submit.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm.startsWith('review/') || norm === 'tool.html') {
+        const mod = await import('./pages/tool.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === 'about' || norm === 'about.html') {
+        const mod = await import('./pages/about.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === 'contact' || norm === 'contact.html') {
+        const mod = await import('./pages/contact.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === 'privacy' || norm === 'privacy.html') {
+        const mod = await import('./pages/privacy.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === 'terms' || norm === 'terms.html') {
+        const mod = await import('./pages/terms.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === 'pricing' || norm === 'pricing.html' || norm === 'pricing/index.html' || norm.startsWith('pricing')) {
+        const mod = await import('./pages/pricing.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      } else if (norm === '404' || norm === '404.html') {
+        const mod = await import('./pages/notfound.js');
+        if (typeof mod.initPage === 'function') mod.initPage();
+      }
+    } catch (err) {
+      console.error('SPA route transition handler error:', err);
+    }
+  }
+
+  function updateActiveNav(pathname) {
+    const cleanPath = pathname.replace(/^\//, '') || 'index.html';
+    const isHome = cleanPath === 'index.html' || cleanPath === '';
+
+    document.querySelectorAll('.nav-link, .tabbar-link').forEach((link) => {
+      const linkHref = link.getAttribute('href') || '';
+      const linkClean = linkHref.replace(/^\//, '').split('?')[0].split('#')[0];
+      const match = (isHome && (linkClean === '' || linkClean === 'index.html')) ||
+                    (!isHome && linkClean && cleanPath.startsWith(linkClean));
+
+      if (match) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  async function navigate(href, { push = true } = {}) {
+    const targetUrl = new URL(href, window.location.href);
+
+    updateActiveNav(targetUrl.pathname);
+
+    try {
+      const res = await fetch(targetUrl.href);
+      if (!res.ok) {
+        window.location.href = targetUrl.href;
+        return;
+      }
+
+      const html = await res.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const newMain = doc.querySelector('#main');
+
+      if (!newMain) {
+        window.location.href = targetUrl.href;
+        return;
+      }
+
+      if (push) {
+        window.history.pushState({}, '', targetUrl.href);
+      }
+
+      if (doc.title) {
+        document.title = doc.title;
+      }
+
+      const newDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content');
+      if (newDesc) {
+        const curDesc = document.querySelector('meta[name="description"]');
+        if (curDesc) curDesc.setAttribute('content', newDesc);
+      }
+
+      const newCanonical = doc.querySelector('link[rel="canonical"]')?.getAttribute('href');
+      if (newCanonical) {
+        const curCanonical = document.querySelector('link[rel="canonical"]');
+        if (curCanonical) curCanonical.setAttribute('href', newCanonical);
+      }
+
+      const curMain = document.getElementById('main');
+      if (curMain) {
+        curMain.className = newMain.className;
+        curMain.innerHTML = newMain.innerHTML;
+      }
+
+      window.scrollTo(0, 0);
+
+      initShellIcons(document.getElementById('main'));
+
+      document.dispatchEvent(new CustomEvent('rateai:route-changed', {
+        detail: { url: targetUrl.href, pathname: targetUrl.pathname }
+      }));
+
+      await runPageHandler(targetUrl.pathname);
+
+    } catch {
+      window.location.href = targetUrl.href;
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.defaultPrevented) return;
+
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+
+    if (link.target && link.target !== '_self') return;
+    if (link.hasAttribute('download')) return;
+    if (link.getAttribute('rel')?.includes('external')) return;
+
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+
+    const targetUrl = new URL(link.href, window.location.href);
+    if (targetUrl.origin !== window.location.origin) return;
+
+    if (targetUrl.pathname === window.location.pathname && targetUrl.search === window.location.search && targetUrl.hash) {
+      return;
+    }
+
+    e.preventDefault();
+    navigate(link.href, { push: true });
+  });
+
+  window.addEventListener('popstate', () => {
+    navigate(window.location.href, { push: false });
+  });
+}
+
+let shellInitialized = false;
+
 /** Call once per page, as early as the module runs. */
 export function initShell({ isMock = false } = {}) {
+  if (shellInitialized) return;
+  shellInitialized = true;
   initTheme();
   initShellIcons();
   initFooterYear();
   initKeyboard();
   initConnection();
   initModeNotice(isMock);
+  initBackgroundCanvas();
+  initRouter();
 }

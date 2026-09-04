@@ -35,23 +35,33 @@ import {
   getParams,
   replaceParams,
 } from '../util.js';
+import { mountNavAuth } from '../auth.js';
+import { applySEO } from '../seo.js';
 
 initShell({ isMock });
+mountNavAuth();
+
+applySEO({
+  title: 'Compare AI Tools Side-by-Side | Rate AI',
+  description: 'Side by side comparison of artificial intelligence tools: scores, sample sizes, pricing, and category breakdowns.',
+  canonicalPath: '/compare',
+});
 
 const el = {
-  pick: {
-    a: document.querySelector('[data-pick="a"]'),
-    b: document.querySelector('[data-pick="b"]'),
-  },
-  slot: {
-    a: document.querySelector('[data-slot="a"]'),
-    b: document.querySelector('[data-slot="b"]'),
-  },
-  summary: document.querySelector('[data-summary]'),
-  swap: document.querySelector('[data-swap]'),
-  clear: document.querySelector('[data-clear]'),
-  out: document.querySelector('[data-cmp]'),
+  pick: {},
+  slot: {},
 };
+
+function queryElements() {
+  el.pick.a = document.querySelector('[data-pick="a"]');
+  el.pick.b = document.querySelector('[data-pick="b"]');
+  el.slot.a = document.querySelector('[data-slot="a"]');
+  el.slot.b = document.querySelector('[data-slot="b"]');
+  el.summary = document.querySelector('[data-summary]');
+  el.swap = document.querySelector('[data-swap]');
+  el.clear = document.querySelector('[data-clear]');
+  el.out = document.querySelector('[data-cmp]');
+}
 
 const KEYS = ['a', 'b'];
 const other = (key) => (key === 'a' ? 'b' : 'a');
@@ -413,8 +423,11 @@ async function load({ force = false } = {}) {
   }
 }
 
-window.addEventListener('online', () => {
-  if (!tools.length) load({ force: true });
-});
+export function initPage() {
+  queryElements();
+  if (el.out) {
+    load();
+  }
+}
 
-load();
+initPage();

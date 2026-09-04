@@ -1,4 +1,31 @@
-# Rate AI production redirects for single-page routing
-/reviewe/*   /tool.html   200
-/review/*    /tool.html   200
-/reviews/*   /tool.html   200
+# Rate AI production redirects for clean routing
+/explore          /explore.html    200
+/compare          /compare.html    200
+/submit           /submit.html     200
+/about            /about.html      200
+/contact          /contact.html    200
+/privacy          /privacy.html    200
+/terms            /terms.html      200
+
+# Legacy route aliases (301 Permanent Redirects)
+/categories       /explore.html    301
+/categories.html  /explore.html    301
+/category/*       /explore.html    301
+/trending         /explore.html?sort=trending 301
+/trending.html    /explore.html?sort=trending 301
+/new              /explore.html?sort=new 301
+/new.html         /explore.html?sort=new 301
+/top-rated        /explore.html?sort=rating 301
+/top-rated.html   /explore.html?sort=rating 301
+/search           /explore.html    301
+/search.html      /explore.html    301
+/cookies.html     /privacy.html    301
+/leaderboard      /index.html      301
+/leaderboard.html /index.html      301
+/reviewe/*        /review/:splat   301
+/reviews/*        /review/:splat   301
+/tools/*          /review/:splat   301
+
+# Dynamic tool detail fallback (for any newly added tools not pre-rendered statically)
+/review/*         /tool.html       200
+
