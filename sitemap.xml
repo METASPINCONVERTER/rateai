@@ -19,7 +19,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://rateai.in/pricing/index.html</loc>
+    <loc>https://rateai.in/pricing.html</loc>
     <lastmod>2026-09-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -74,343 +74,439 @@
   </url>
   <url>
     <loc>https://rateai.in/review/adobe-firefly-firefly.adobe.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/adobe-podcast-podcast.adobe.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/amazon-codewhisperer-aws.amazon.com/</loc>
-    <lastmod>2026-09-04</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/beautiful-ai-beautiful.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/canva-ai-canva.com/</loc>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/chatgpt-chat.openai.com/</loc>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/chatgpt-gpt-4o-chatgpt-plus/</loc>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/claude-3-7-sonnet-claude-3-7/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/claude-3-claude.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/codeium-codeium.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/cohere-cohere.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/consensus-consensus.app/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/copy-ai-copy.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/cursor-ai-cursor-ai/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/cursor-cursor.sh/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/d-id-d-id.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/dall-e-3-openai.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/deepseek-r1-deepseek-r1/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/descript-descript.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/devin-cognition.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/elevenlabs-elevenlabs-voice/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/elevenlabs-elevenlabs.io/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/elicit-elicit.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/fireflies-ai-fireflies.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/flux-ai-blackforestlabs.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/gamma-gamma.app/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/github-copilot-github-copilot/</loc>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/github-copilot-github.com/</loc>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/google-antigravity-google-antigravity/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/google-gemini-gemini.google.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/grammarlygo-grammarly.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/grok-grok.x.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/heygen-heygen.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/ideogram-ideogram.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/jasper-ai-jasper-ai/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/jasper-jasper.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/kling-ai-klingai.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/leonardo-ai-leonardo-ai/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/leonardo-ai-leonardo.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/luma-dream-machine-lumalabs.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/mem-ai-mem.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/meta-ai-meta.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/midjourney-midjourney.com/</loc>
-    <lastmod>2026-04-24</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/midjourney-v6-midjourney-v6/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/mistral-ai-mistral.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/motion-usemotion.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/murf-ai-murf.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/notion-ai-notion.so/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/otter-ai-otter.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/perplexity-ai-perplexity-pro/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/perplexity-ai-perplexity.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/phind-phind.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/pika-labs-pika.art/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/playground-ai-playground.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/presentations-ai-presentations.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/quillbot-quillbot.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/reclaim-ai-reclaim.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/replit-ai-replit.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/resemble-ai-resemble.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/runway-gen-2-runwayml.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/runway-gen-3-alpha-runway-gen-3/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/stable-diffusion-stability.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/sudowrite-sudowrite.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/suno-ai-suno.ai/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/synthesia-synthesia.io/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/tabnine-tabnine.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/tome-tome.app/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/udio-udio.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rateai.in/review/v0-by-vercel-v0-vercel/</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/wordtune-wordtune.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/writesonic-writesonic.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/you-com-you.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://rateai.in/review/zapier-ai-zapier.com/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
