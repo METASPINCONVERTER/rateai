@@ -215,6 +215,32 @@ export function faviconUrl(domain, size = 64) {
   return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=${size}`;
 }
 
+/**
+ * Gets the site base path. For local and root deployments this is '/'.
+ * For GitHub Pages subpath deployments (e.g., github.io/rateai/), it returns '/rateai/'.
+ */
+export function getSiteBase() {
+  if (typeof window === 'undefined') return '/';
+  const path = window.location.pathname;
+  // If we are deep in a review/ route, we can infer the base is everything before it
+  const match = path.match(/^(.*\/)(?:review(?:s|e)?|category)\//i);
+  if (match) return match[1];
+
+  // Otherwise, the base is the directory of the current file up to any known HTML root files
+  const rootFiles = ['/index.html', '/explore.html', '/compare.html', '/about.html', '/search.html', '/submit.html', '/contact.html', '/privacy.html', '/terms.html', '/404.html'];
+  for (const f of rootFiles) {
+    if (path.endsWith(f)) {
+      return path.slice(0, -f.length + 1);
+    }
+  }
+
+  // If there's no filename or we are at a directory root, that directory is the base
+  if (path.endsWith('/')) return path;
+
+  // Fallback: strip the last segment
+  return path.substring(0, path.lastIndexOf('/') + 1);
+}
+
 export function slugify(text) {
   return String(text ?? '')
     .toLowerCase()
@@ -271,7 +297,8 @@ export function toolHref(domain, name = '') {
   }
 
   const slug = toolSlug(d, n);
-  return `/review/${slug}/`;
+  const base = getSiteBase();
+  return `${base}review/${slug}/`;
 }
 
 export function exploreHref(params = {}) {
@@ -297,16 +324,19 @@ export function categoryHref(slugOrName) {
   if (typeof window !== 'undefined' && window.location?.protocol === 'file:') {
     return `category.html?c=${encodeURIComponent(s)}`;
   }
-  return `/category/${s}`;
+  const base = getSiteBase();
+  return `${base}category/${s}`;
 }
 
 export function searchHref(query = '') {
   const q = String(query ?? '').trim();
-  return q ? `search.html?q=${encodeURIComponent(q)}` : 'search.html';
+  const base = getSiteBase();
+  return q ? `${base}search.html?q=${encodeURIComponent(q)}` : `${base}search.html`;
 }
 
 export function favoritesHref() {
-  return 'favorites.html';
+  const base = getSiteBase();
+  return `${base}favorites.html`;
 }
 
 /**
@@ -317,7 +347,8 @@ export function submitHref({ domain = '', name = '' } = {}) {
   if (domain) q.set('domain', cleanDomain(domain));
   if (name) q.set('name', String(name).trim());
   const s = q.toString();
-  return s ? `search.html?q=${encodeURIComponent(name || domain)}` : 'search.html';
+  const base = getSiteBase();
+  return s ? `${base}submit.html?${s}` : `${base}submit.html`;
 }
 
 export function getParams() {

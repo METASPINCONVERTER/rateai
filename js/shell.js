@@ -10,7 +10,7 @@
  */
 
 import { icon } from './icons.js';
-import { esc } from './util.js';
+import { esc, getSiteBase } from './util.js';
 
 /* ==========================================================================
    Theme
@@ -554,7 +554,13 @@ function initRouter() {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
   async function runPageHandler(pathname) {
-    const norm = pathname.replace(/^\//, '').toLowerCase();
+    const base = getSiteBase();
+    let norm = pathname.toLowerCase();
+    if (norm.startsWith(base.toLowerCase())) {
+      norm = norm.slice(base.length);
+    }
+    norm = norm.replace(/^\//, '');
+
     try {
       if (norm === '' || norm === 'index.html') {
         const mod = await import('./pages/home.js');
@@ -596,7 +602,12 @@ function initRouter() {
   }
 
   function updateActiveNav(pathname) {
-    const cleanPath = pathname.replace(/^\//, '') || 'index.html';
+    const base = getSiteBase();
+    let norm = pathname;
+    if (norm.startsWith(base)) {
+      norm = norm.slice(base.length);
+    }
+    const cleanPath = norm.replace(/^\//, '') || 'index.html';
     const isHome = cleanPath === 'index.html' || cleanPath === '';
 
     document.querySelectorAll('.nav-link, .tabbar-link').forEach((link) => {
