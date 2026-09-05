@@ -137,10 +137,11 @@ function buildJsonLd(tool) {
 function generatePageHtml(templateHtml, tool) {
   const slug = toolSlug(tool.domain, tool.name);
   const canonicalUrl = `${SITE_URL}/review/${slug}/`;
-  const seoTitle = `${tool.name} — Reviews, Rating & Pricing | Rate AI`;
+  const domainText = cleanDomain(tool.domain);
+  const seoTitle = `${tool.name} (${domainText}) — Reviews, Rating & Pricing | Rate AI`;
   const metaDesc = (tool.description && tool.description.trim())
-    ? `${tool.name}: ${tool.description.trim()}`
-    : `Authentic user reviews, community score, pricing, and features for ${tool.name} (${tool.domain}).`;
+    ? `${tool.name} (${domainText}): ${tool.description.trim()}`
+    : `Authentic user reviews, community score, pricing, and features for ${tool.name} (${domainText}).`;
   const iconUrl = tool.iconUrl || `https://www.google.com/s2/favicons?domain=${tool.domain}&sz=128`;
   const jsonLd = buildJsonLd(tool);
 
@@ -190,7 +191,7 @@ function generateSitemap(tools) {
     { url: `${SITE_URL}/`, priority: '1.0', changefreq: 'daily' },
     { url: `${SITE_URL}/explore.html`, priority: '0.9', changefreq: 'daily' },
     { url: `${SITE_URL}/compare.html`, priority: '0.8', changefreq: 'weekly' },
-    { url: `${SITE_URL}/pricing/index.html`, priority: '0.9', changefreq: 'daily' },
+    { url: `${SITE_URL}/pricing.html`, priority: '0.9', changefreq: 'daily' },
     { url: `${SITE_URL}/how-it-works.html`, priority: '0.8', changefreq: 'monthly' },
     { url: `${SITE_URL}/trust.html`, priority: '0.8', changefreq: 'monthly' },
     { url: `${SITE_URL}/guidelines.html`, priority: '0.7', changefreq: 'monthly' },
@@ -234,7 +235,33 @@ function generateSitemap(tools) {
 }
 
 function generateRobots() {
-  return `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+  return `User-agent: *
+Allow: /
+
+# Dedicated AI search and engine crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`;
 }
 
 async function main() {
@@ -282,7 +309,7 @@ async function main() {
   // Write sitemap.xml
   const sitemapXml = generateSitemap(tools);
   writeFileSync(join(ROOT, 'sitemap.xml'), sitemapXml, 'utf8');
-  console.log(`Generated sitemap.xml with ${tools.length + 8} URLs.`);
+  console.log(`Generated sitemap.xml with ${tools.length + 12} URLs.`);
 
   // Write robots.txt
   const robotsTxt = generateRobots();
