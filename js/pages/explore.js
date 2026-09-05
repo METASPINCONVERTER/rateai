@@ -52,6 +52,7 @@ const SORT_VALUES = SORTS.map((s) => s.value);
 
 function queryElements() {
   el.search = document.querySelector('[data-filter-search]');
+  el.searchClear = document.querySelector('[data-search-clear]');
   el.sort = document.querySelector('[data-sort]');
   el.categories = document.querySelector('[data-categories]');
   el.viewSwitch = document.querySelector('[data-view-switch]');
@@ -89,6 +90,7 @@ function writeUrl() {
 
 function syncControls() {
   if (el.search && el.search.value !== state.q) el.search.value = state.q;
+  if (el.searchClear) el.searchClear.hidden = !state.q;
   if (el.sort && el.sort.value !== state.sort) el.sort.value = state.sort;
 
   if (el.categories) {
@@ -154,14 +156,30 @@ function renderResults() {
 
 function initEvents() {
   if (el.search) {
-    el.search.addEventListener(
-      'input',
-      debounce((e) => {
-        state.q = e.target.value.trim();
-        writeUrl();
-        renderResults();
-      }, 150),
-    );
+    const handleInput = debounce((val) => {
+      state.q = val;
+      writeUrl();
+      renderResults();
+    }, 150);
+
+    el.search.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (el.searchClear) el.searchClear.hidden = !val;
+      handleInput(val);
+    });
+  }
+
+  if (el.searchClear) {
+    el.searchClear.addEventListener('click', () => {
+      state.q = '';
+      if (el.search) {
+        el.search.value = '';
+        el.search.focus();
+      }
+      el.searchClear.hidden = true;
+      writeUrl();
+      renderResults();
+    });
   }
 
   if (el.sort) {

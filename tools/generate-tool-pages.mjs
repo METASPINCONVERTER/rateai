@@ -153,6 +153,9 @@ function generatePageHtml(templateHtml, tool) {
   // Replace meta description
   html = html.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${esc(metaDesc)}">`);
 
+  // Ensure base path points to root correctly regardless of where the site is hosted (GitHub Pages subpaths)
+  html = html.replace(/<base href="\/">/, `<base href="../../">`);
+
   // Build meta tags block
   const metaTags = [
     `<!-- Primary Canonical & SEO Meta -->`,
