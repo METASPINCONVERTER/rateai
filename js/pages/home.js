@@ -66,6 +66,7 @@ function queryElements() {
   el.awaiting = document.querySelector('[data-awaiting]');
   el.awaitingSection = document.querySelector('[data-awaiting-section]');
   el.search = document.querySelector('[data-search-input]');
+  el.searchClear = document.querySelector('[data-search-clear]');
   el.suggest = document.querySelector('[data-suggest]');
   el.suggestList = document.querySelector('[data-suggest-list]');
   el.suggestEmpty = document.querySelector('[data-suggest-empty]');
@@ -235,10 +236,21 @@ function moveActive(delta) {
 }
 
 function initSearch() {
-  el.search.addEventListener(
-    'input',
-    debounce(() => renderSuggest(el.search.value), 120),
-  );
+  const handleInput = debounce((val) => renderSuggest(val), 120);
+
+  el.search.addEventListener('input', () => {
+    if (el.searchClear) el.searchClear.hidden = !el.search.value;
+    handleInput(el.search.value);
+  });
+
+  if (el.searchClear) {
+    el.searchClear.addEventListener('click', () => {
+      el.search.value = '';
+      el.searchClear.hidden = true;
+      el.search.focus();
+      closeSuggest();
+    });
+  }
 
   el.search.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowDown') {
