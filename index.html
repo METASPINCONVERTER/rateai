@@ -3,314 +3,669 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rate AI — Community ratings for AI tools</title>
-<meta name="description" content="Ratings for AI tools, written by the people using them. Every score is an average of individual verdicts, shown with the number of ratings behind it.">
-<link rel="canonical" href="https://rateai.in/">
+<title>PC Remote — Control your Windows PC from your Android phone</title>
+<meta name="description" content="PC Remote is a fast, private, and convenient way to turn your Android phone into a wireless or USB touchpad, keyboard, and controller for your Windows PC.">
+<link rel="canonical" href="https://pcremote.app/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Rate AI">
-<meta property="og:url" content="https://rateai.in/">
-<meta property="og:title" content="Rate AI — Community ratings for AI tools">
-<meta property="og:description" content="Ratings for AI tools, written by the people using them. Every score is an average of individual verdicts, shown with the number of ratings behind it.">
-<meta property="og:image" content="https://rateai.in/icons/icon-512.svg">
+<meta property="og:site_name" content="PC Remote">
+<meta property="og:url" content="https://pcremote.app/">
+<meta property="og:title" content="PC Remote — Control your Windows PC from your Android phone">
+<meta property="og:description" content="Control your Windows PC seamlessly from your Android device over Wi-Fi or USB. Fast, private, and designed for effortless control.">
+<meta property="og:image" content="https://pcremote.app/favicon.svg">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:url" content="https://rateai.in/">
-<meta name="twitter:title" content="Rate AI — Community ratings for AI tools">
-<meta name="twitter:description" content="Ratings for AI tools, written by the people using them. Every score is an average of individual verdicts, shown with the number of ratings behind it.">
-<meta name="twitter:image" content="https://rateai.in/icons/icon-512.svg">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": "https://rateai.in/#website",
-      "url": "https://rateai.in/",
-      "name": "Rate AI",
-      "description": "Ratings for AI tools, written by the people using them. Every score is an average of individual verdicts, shown with the number of ratings behind it.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://rateai.in/explore.html?q={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-      }
-    },
-    {
-      "@type": "ItemList",
-      "@id": "https://rateai.in/#leaderboard",
-      "name": "The Leaderboard",
-      "description": "Ranked by weighted average, so sample size counts.",
-      "url": "https://rateai.in/"
-    }
-  ]
-}
-</script>
-<meta name="theme-color" content="#F7F7F3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)">
+<meta name="twitter:title" content="PC Remote — Control your Windows PC from your Android phone">
+<meta name="twitter:description" content="Control your Windows PC seamlessly from your Android device over Wi-Fi or USB. Fast, private, and designed for effortless control.">
+<meta name="theme-color" content="#F3EFFA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#120E1A" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/layout.css">
-<!-- Applies the saved theme before first paint, so there is no flash of the wrong one. -->
-<script>(function(){try{var t=localStorage.getItem('rateai.theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('pcremote.theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
 </head>
 <body>
 
+<!-- Ambient Milky-Purple Glass Background Atmosphere Shapes -->
+<div class="bg-atmosphere" aria-hidden="true">
+  <div class="bg-shape-1"></div>
+  <div class="bg-shape-2"></div>
+  <div class="bg-shape-hero"></div>
+  <div class="bg-shape-3"></div>
+</div>
+
 <a class="skip-link" href="#main">Skip to content</a>
 
-<header class="nav">
-  <div class="wrap nav-inner">
-    <a class="brand" href="index.html" aria-label="Rate AI, home">
-      <svg class="brand-mark" viewBox="0 0 26 26" aria-hidden="true" focusable="false">
-        <rect width="26" height="26" rx="6" fill="var(--accent)"/>
-        <rect x="6.5" y="15" width="3" height="4.5" rx="1.5" fill="var(--accent-contrast)" opacity=".55"/>
-        <rect x="11.5" y="11" width="3" height="8.5" rx="1.5" fill="var(--accent-contrast)" opacity=".78"/>
-        <rect x="16.5" y="6.5" width="3" height="13" rx="1.5" fill="var(--accent-contrast)"/>
-      </svg>
-      <span class="brand-name">Rate AI</span>
-    </a>
-    <nav class="nav-links" aria-label="Primary">
-      <a class="nav-link" href="index.html" aria-current="page">Overview</a>
-      <a class="nav-link" href="explore.html">Explore</a>
-      <a class="nav-link" href="compare.html">Compare</a>
-      <a class="nav-link" href="pricing/index.html">AI Pricing</a>
-    </nav>
-    <div class="nav-actions">
-      <div data-nav-auth>
-        <button class="btn btn-secondary btn-sm" type="button" data-auth-trigger="signin">
-          <span data-icon="user" data-icon-size="sm"></span>
-          <span class="nav-auth-label">Sign in</span>
+<!-- Floating Glass Navigation Pill -->
+<div class="nav-wrapper">
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html" aria-label="PC Remote, home">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="3" width="14" height="10" rx="1.5" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <path d="M6 13v3M12 13v3M4 16h10" stroke="var(--accent)"/>
+          <rect x="15" y="9" width="7" height="12" rx="1.5" fill="var(--surface)" stroke="var(--accent)"/>
+          <circle cx="18.5" cy="18" r="0.75" fill="var(--accent)"/>
+          <path d="M12 6.5a4 4 0 0 1 4 4" stroke="var(--accent)" stroke-dasharray="2 2"/>
+        </svg>
+        <span class="brand-name">PC Remote</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a class="nav-link" href="index.html" aria-current="page">Overview</a>
+        <a class="nav-link" href="index.html#features">Features</a>
+        <a class="nav-link" href="index.html#how-it-works">How It Works</a>
+        <a class="nav-link" href="index.html#download">Download</a>
+        <a class="nav-link" href="index.html#faq">Support</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-icon btn-sm" type="button" data-theme-toggle aria-label="Switch theme">
+          <span data-icon="sun" data-icon-size="sm"></span>
+        </button>
+        <a class="btn btn-primary btn-sm" href="index.html#download">
+          <span data-icon="download" data-icon-size="sm"></span>
+          <span>Download</span>
+        </a>
+        <button class="btn btn-icon btn-sm nav-mobile-toggle" type="button" data-mobile-toggle aria-label="Toggle menu" aria-expanded="false">
+          <span data-icon="menu" data-icon-size="sm"></span>
         </button>
       </div>
-      <button class="btn btn-icon btn-sm" type="button" data-theme-toggle aria-label="Switch theme"></button>
     </div>
-  </div>
-</header>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="nav-mobile-menu" data-mobile-menu hidden>
+      <a class="nav-mobile-link" href="index.html#features">Features</a>
+      <a class="nav-mobile-link" href="index.html#how-it-works">How It Works</a>
+      <a class="nav-mobile-link" href="index.html#download">Download Hub</a>
+      <a class="nav-mobile-link" href="index.html#security">Security</a>
+      <a class="nav-mobile-link" href="index.html#faq">Support &amp; FAQ</a>
+    </div>
+  </header>
+</div>
 
 <main class="page" id="main">
   <div class="wrap">
 
-    <div class="notice notice-caution" data-mode-notice hidden></div>
-
-    <section class="hero">
-      <h1 class="hero-title">Ratings for AI tools, from the people using them.</h1>
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-pill">
+        <span data-icon="wifi" data-icon-size="sm"></span>
+        <span>Local Control • Wi-Fi + USB</span>
+      </div>
+      <h1 class="hero-title" id="hero-title">
+        Turn Your Android Phone Into a Precision PC Controller.
+      </h1>
       <p class="hero-text">
-        Every score here is the average of individual verdicts, published with the
-        number of ratings behind it. No sponsored placements, no editorial picks.
+        Control your Windows PC seamlessly from your Android device over Wi-Fi or USB. Fast, private, and designed for effortless control.
       </p>
-      <div class="hero-search search search-lg">
-        <span class="search-icon" data-icon="search" data-icon-size="lg"></span>
-        <input class="search-input" type="search" data-search-input
-               role="combobox" aria-expanded="false" aria-controls="suggest-list"
-               aria-autocomplete="list" autocomplete="off"
-               placeholder="Search by name, category or domain"
-               aria-label="Search tools">
-        <button class="search-clear" type="button" aria-label="Clear search" data-search-clear hidden>
-          <span data-icon="close" data-icon-size="sm"></span>
+      <div class="hero-cta">
+        <a class="btn btn-primary btn-lg" href="index.html#download-windows" data-download-btn="windows">
+          <span data-icon="windows" data-icon-size="md"></span>
+          <span>Download for Windows</span>
+        </a>
+        <a class="btn btn-secondary btn-lg" href="index.html#download-android" data-download-btn="android">
+          <span data-icon="android" data-icon-size="md"></span>
+          <span>Download for Android</span>
+        </a>
+      </div>
+      <p class="hero-supporting">
+        Local connection • No cloud required • Wi-Fi + USB
+      </p>
+    </section>
+
+    <!-- Download Hub Section -->
+    <section class="section" id="download" aria-labelledby="download-title">
+      <div class="section-head">
+        <h2 class="section-title" id="download-title">Download Center</h2>
+        <p class="section-sub">Get the Windows agent for your PC and the Android controller app for your phone.</p>
+      </div>
+
+      <div class="download-cards-grid">
+        <!-- Windows Download Card -->
+        <article class="download-card" id="download-windows">
+          <div class="download-card-head">
+            <div class="download-card-icon">
+              <span data-icon="windows" data-icon-size="xl"></span>
+            </div>
+            <div class="download-card-title-group">
+              <h3 class="download-card-title">PC Remote for Windows</h3>
+              <span class="download-card-file">PcRemoteAgent.exe</span>
+            </div>
+          </div>
+          <p class="download-card-desc">
+            The Windows agent that runs on your PC and enables remote control from your Android phone.
+          </p>
+          <div class="download-card-reqs">
+            <span class="badge">Windows 7 / 8 / 10 / 11</span>
+            <span class="badge">.NET Framework 4.8+</span>
+            <span class="badge badge-plain">Portable App</span>
+          </div>
+          <div class="download-card-foot">
+            <a class="btn btn-primary btn-lg" href="https://pcremote.app/downloads/PcRemoteAgent.exe" data-download-link="windows">
+              <span data-icon="download" data-icon-size="md"></span>
+              <span>Download Windows Agent</span>
+            </a>
+            <span class="t-meta t-muted text-center">File size: Available in download</span>
+          </div>
+        </article>
+
+        <!-- Android Download Card -->
+        <article class="download-card" id="download-android">
+          <div class="download-card-head">
+            <div class="download-card-icon">
+              <span data-icon="android" data-icon-size="xl"></span>
+            </div>
+            <div class="download-card-title-group">
+              <h3 class="download-card-title">PC Remote for Android</h3>
+              <span class="download-card-file">PC-Remote.apk</span>
+            </div>
+          </div>
+          <p class="download-card-desc">
+            The Android controller app for touchpad, keyboard, media, and remote PC controls.
+          </p>
+          <div class="download-card-reqs">
+            <span class="badge">Android 8.0+</span>
+            <span class="badge">API 26+</span>
+            <span class="badge badge-plain">APK Installer</span>
+          </div>
+          <div class="download-card-foot">
+            <a class="btn btn-primary btn-lg" href="https://pcremote.app/downloads/PC-Remote.apk" data-download-link="android">
+              <span data-icon="download" data-icon-size="md"></span>
+              <span>Download Android App</span>
+            </a>
+            <span class="t-meta t-muted text-center">File size: Available in download</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Feature Highlights -->
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="section-head">
+        <h2 class="section-title" id="features-title">Designed for Effortless Control</h2>
+        <p class="section-sub">A clean, high-performance remote control experience built with privacy and speed in mind.</p>
+      </div>
+
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-icon-box">
+            <span data-icon="touchpad" data-icon-size="xl"></span>
+          </div>
+          <h3 class="feature-title">Ultra-Smooth Touchpad</h3>
+          <p class="feature-desc">
+            Fluid cursor control with multi-touch gestures and sensitivity adjustment.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon-box">
+            <span data-icon="usb" data-icon-size="xl"></span>
+          </div>
+          <h3 class="feature-title">Wi-Fi + USB Connection</h3>
+          <p class="feature-desc">
+            Switch between wireless control and direct USB connection.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon-box">
+            <span data-icon="shield" data-icon-size="xl"></span>
+          </div>
+          <h3 class="feature-title">Private Local Control</h3>
+          <p class="feature-desc">
+            Designed to work across your local network without requiring cloud access.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section" id="how-it-works" aria-labelledby="how-title">
+      <div class="section-head">
+        <h2 class="section-title" id="how-title">How It Works</h2>
+        <p class="section-sub">Get started in three simple steps with zero complex configuration required.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3 class="step-title">Download the Windows Agent</h3>
+          <p class="step-desc">Run the PC Remote agent on your Windows PC.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3 class="step-title">Connect Your Phone</h3>
+          <p class="step-desc">Open the Android app and choose Wi-Fi or USB.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3 class="step-title">Pair &amp; Control</h3>
+          <p class="step-desc">Enter the pairing PIN and start controlling your PC.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Showcase Tabs -->
+    <section class="section" id="showcase" aria-labelledby="showcase-title">
+      <div class="section-head">
+        <h2 class="section-title" id="showcase-title">Powerful Capabilities</h2>
+        <p class="section-sub">Explore the full suite of remote input and system monitoring tools built into PC Remote.</p>
+      </div>
+
+      <div class="showcase-tabs" role="tablist" aria-label="Feature capabilities">
+        <button class="tab-btn" role="tab" id="tab-touchpad" aria-selected="true" aria-controls="panel-touchpad" data-showcase-tab="touchpad">
+          <span data-icon="touchpad" data-icon-size="sm"></span>
+          <span>Touchpad &amp; Mouse</span>
+        </button>
+        <button class="tab-btn" role="tab" id="tab-keyboard" aria-selected="false" aria-controls="panel-keyboard" data-showcase-tab="keyboard">
+          <span data-icon="keyboard" data-icon-size="sm"></span>
+          <span>Full Keyboard</span>
+        </button>
+        <button class="tab-btn" role="tab" id="tab-monitor" aria-selected="false" aria-controls="panel-monitor" data-showcase-tab="monitor">
+          <span data-icon="monitor" data-icon-size="sm"></span>
+          <span>PC Health Monitor</span>
+        </button>
+        <button class="tab-btn" role="tab" id="tab-media" aria-selected="false" aria-controls="panel-media" data-showcase-tab="media">
+          <span data-icon="media" data-icon-size="sm"></span>
+          <span>Media &amp; Power</span>
         </button>
       </div>
-      <div class="hero-results">
-        <!-- The panel is the popup; the listbox inside it holds only options,
-             because a listbox whose children are not options reports itself as
-             empty. The "no match" line therefore sits outside it, and the
-             status paragraph is what actually tells a screen reader how many
-             results appeared — aria-expanded alone is silent. -->
-        <div class="suggest" data-suggest hidden>
-          <div id="suggest-list" role="listbox" aria-label="Search results" data-suggest-list></div>
-          <p class="suggest-empty" data-suggest-empty hidden></p>
+
+      <!-- Tab Panels -->
+      <div class="showcase-panel" id="panel-touchpad" role="tabpanel" aria-labelledby="tab-touchpad" data-showcase-panel="touchpad">
+        <div class="showcase-content">
+          <h3 class="showcase-title">Touchpad &amp; Mouse Control</h3>
+          <div class="showcase-list">
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Smooth cursor movement &amp; pointer acceleration</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Left click, right click &amp; middle click support</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Two-finger vertical &amp; horizontal scrolling</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Double-tap drag gestures &amp; custom sensitivity control</span>
+            </div>
+          </div>
         </div>
-        <p class="sr-only" role="status" data-suggest-status></p>
+
+        <!-- Concept UI Mockup -->
+        <div class="mockup-box">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+            </div>
+            <span class="mockup-title">Concept Visual — Precision Touchpad</span>
+          </div>
+          <div class="touchpad-surface">
+            <span class="touchpad-cursor" data-icon="touchpad" data-icon-size="xl"></span>
+            <span class="t-meta t-muted">Multi-Touch Surface</span>
+          </div>
+          <div class="touchpad-buttons">
+            <div class="touchpad-btn">Left Click</div>
+            <div class="touchpad-btn">Right Click</div>
+          </div>
+        </div>
       </div>
-      <p class="hero-meta" data-stats>
-        <span class="t-muted">Loading the catalogue…</span>
-      </p>
+
+      <div class="showcase-panel" id="panel-keyboard" role="tabpanel" aria-labelledby="tab-keyboard" data-showcase-panel="keyboard" hidden>
+        <div class="showcase-content">
+          <h3 class="showcase-title">Full Desktop Keyboard</h3>
+          <div class="showcase-list">
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Complete key support: CTRL, ALT, SHIFT, WIN, ESC, TAB, ENTER</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Function key bar (F1–F12) for quick application shortcuts</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Arrow key cluster &amp; navigation controls</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Custom shortcut presets (Copy, Paste, Undo, Task Manager)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mockup-box">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+            </div>
+            <span class="mockup-title">Concept Visual — Desktop Keys</span>
+          </div>
+          <div class="key-grid">
+            <div class="key-cap key-cap-active">CTRL</div>
+            <div class="key-cap">ALT</div>
+            <div class="key-cap">SHIFT</div>
+            <div class="key-cap">WIN</div>
+            <div class="key-cap">ESC</div>
+            <div class="key-cap">F1</div>
+            <div class="key-cap">F2</div>
+            <div class="key-cap">F5</div>
+            <div class="key-cap">F11</div>
+            <div class="key-cap">DEL</div>
+            <div class="key-cap key-cap-wide">SPACE</div>
+            <div class="key-cap key-cap-wide">ENTER</div>
+            <div class="key-cap">TAB</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-panel" id="panel-monitor" role="tabpanel" aria-labelledby="tab-monitor" data-showcase-panel="monitor" hidden>
+        <div class="showcase-content">
+          <h3 class="showcase-title">PC Health Monitor</h3>
+          <div class="showcase-list">
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Real-time CPU utilization &amp; core usage feedback</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Memory (RAM) usage &amp; available system memory</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Disk drive status &amp; storage metrics</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>GPU information &amp; graphics status</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mockup-box">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+            </div>
+            <span class="mockup-title">Concept Visual — System Metrics</span>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">CPU Usage</div>
+              <div class="metric-val">18%</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">RAM Usage</div>
+              <div class="metric-val">42%</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Disk Storage</div>
+              <div class="metric-val">256 GB</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">GPU Info</div>
+              <div class="metric-val">Ready</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-panel" id="panel-media" role="tabpanel" aria-labelledby="tab-media" data-showcase-panel="media" hidden>
+        <div class="showcase-content">
+          <h3 class="showcase-title">Media &amp; Power Controls</h3>
+          <div class="showcase-list">
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Volume control: Volume up, Volume down, and instant Mute</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Playback commands: Play / Pause, Next track, Previous track</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Quick PC power actions: Lock screen, Sleep mode</span>
+            </div>
+            <div class="showcase-item">
+              <span class="showcase-item-icon" data-icon="checkCircle" data-icon-size="sm"></span>
+              <span>Remote system commands: Restart PC, Shutdown PC</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mockup-box">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+            </div>
+            <span class="mockup-title">Concept Visual — Media Deck</span>
+          </div>
+          <div class="media-controls-bar">
+            <div class="media-btn"><span data-icon="media" data-icon-size="sm"></span></div>
+            <div class="media-btn media-btn-primary"><span data-icon="play" data-icon-size="sm"></span></div>
+            <div class="media-btn"><span data-icon="power" data-icon-size="sm"></span></div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section aria-labelledby="leaderboard-title">
-      <div class="section-head">
-        <h2 class="section-title" id="leaderboard-title">
-          The leaderboard
-          <span class="section-count" data-leaderboard-count></span>
-        </h2>
-        <a class="section-action" href="explore.html">
-          All tools<span data-icon="arrowRight" data-icon-size="sm"></span>
-        </a>
-      </div>
-      <p class="section-sub">
-        Ranked by weighted average, so sample size counts. <a class="link" href="about.html">How this works</a>.
-      </p>
-      <div data-leaderboard></div>
-    </section>
-
-    <div class="section split">
-      <section aria-labelledby="activity-title">
+    <!-- Security Section -->
+    <section class="section" id="security" aria-labelledby="security-title">
+      <div class="security-box">
         <div class="section-head">
-          <h2 class="section-title" id="activity-title">Recently reviewed</h2>
+          <h2 class="section-title" id="security-title">Private by design.</h2>
+          <p class="section-sub">PC Remote is designed for local control between your Android phone and Windows PC.</p>
         </div>
-        <div data-activity></div>
-      </section>
 
-      <section aria-labelledby="categories-title">
-        <div class="section-head">
-          <h2 class="section-title" id="categories-title">Browse by category</h2>
+        <div class="security-grid">
+          <div class="security-point">
+            <span class="security-point-icon" data-icon="shield" data-icon-size="md"></span>
+            <span class="security-point-text">Local Wi-Fi or USB connection</span>
+          </div>
+          <div class="security-point">
+            <span class="security-point-icon" data-icon="shield" data-icon-size="md"></span>
+            <span class="security-point-text">PIN-based pairing authentication</span>
+          </div>
+          <div class="security-point">
+            <span class="security-point-icon" data-icon="shield" data-icon-size="md"></span>
+            <span class="security-point-text">Session-level authorization</span>
+          </div>
+          <div class="security-point">
+            <span class="security-point-icon" data-icon="shield" data-icon-size="md"></span>
+            <span class="security-point-text">No cloud account required</span>
+          </div>
+          <div class="security-point">
+            <span class="security-point-icon" data-icon="shield" data-icon-size="md"></span>
+            <span class="security-point-text">Instant device revocation</span>
+          </div>
+          <div class="security-point">
+            <span class="security-point-icon" data-icon="shield" data-icon-size="md"></span>
+            <span class="security-point-text">Safe command allowlisting</span>
+          </div>
         </div>
-        <div data-categories></div>
-      </section>
-    </div>
-
-    <section class="section" data-awaiting-section hidden aria-labelledby="awaiting-title">
-      <div class="section-head">
-        <h2 class="section-title" id="awaiting-title">Awaiting a first verdict</h2>
-        <a class="section-action" href="explore.html?sort=newest">
-          Recently added<span data-icon="arrowRight" data-icon-size="sm"></span>
-        </a>
       </div>
-      <p class="section-sub">Listed, but nobody has rated them yet. Yours would be the first.</p>
-      <div data-awaiting></div>
     </section>
 
-    <section class="section" aria-labelledby="method">
+    <!-- System Requirements Section -->
+    <section class="section" id="requirements" aria-labelledby="reqs-title">
       <div class="section-head">
-        <h2 class="section-title" id="method">How the score works</h2>
+        <h2 class="section-title" id="reqs-title">System Requirements</h2>
+        <p class="section-sub">Simple compatibility specifications for both host and controller devices.</p>
       </div>
-      <div class="split">
-        <div class="stack">
-          <p class="t-body t-secondary measure">
-            A tool's score is the mean of every rating it has received, shown to one
-            decimal place with the rating count beside it. The count is never hidden,
-            because a 5.0 from two people and a 4.6 from twelve thousand are not the
-            same claim.
-          </p>
-          <p class="t-body t-secondary measure">
-            The leaderboard ranks by a weighted average that pulls low-sample tools
-            toward the catalogue mean, so a single five-star rating cannot outrank
-            years of accumulated opinion. Tools with no ratings are listed and
-            searchable, but never ranked.
-          </p>
+
+      <div class="reqs-grid">
+        <div class="req-card">
+          <h3 class="req-title">
+            <span data-icon="windows" data-icon-size="md"></span>
+            <span>Windows PC Agent</span>
+          </h3>
+          <div class="req-list">
+            <p>• Windows 7 / 8 / 10 / 11</p>
+            <p>• .NET Framework 4.8 or newer</p>
+            <p>• Portable desktop application (no heavy installation needed)</p>
+            <p>• File size: Available in download</p>
+          </div>
         </div>
-        <dl class="facts">
-          <div>
-            <dt>Ranking</dt>
-            <dd>Weighted average, 25-rating floor</dd>
+
+        <div class="req-card">
+          <h3 class="req-title">
+            <span data-icon="android" data-icon-size="md"></span>
+            <span>Android App</span>
+          </h3>
+          <div class="req-list">
+            <p>• Android 8.0 or newer</p>
+            <p>• Android API 26+</p>
+            <p>• Wi-Fi connection or USB debugging mode enabled</p>
+            <p>• File size: Available in download</p>
           </div>
-          <div>
-            <dt>Displayed score</dt>
-            <dd>Plain mean, one decimal</dd>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="section-head">
+        <h2 class="section-title" id="faq-title">Frequently Asked Questions</h2>
+        <p class="section-sub">Have questions? Here are answers to common questions about setting up and using PC Remote.</p>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary class="faq-question">
+            <span>Do I need internet access?</span>
+            <span class="faq-question-icon" data-icon="chevronDown" data-icon-size="sm"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>PC Remote is designed to work over your local Wi-Fi network or direct USB connection. Internet access is not required for local communication.</p>
           </div>
-          <div>
-            <dt>Paid placement</dt>
-            <dd>None</dd>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span>How does USB mode work?</span>
+            <span class="faq-question-icon" data-icon="chevronDown" data-icon-size="sm"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>USB mode uses a local USB connection between the Android device and Windows PC. The exact setup depends on the connection method supported by the application.</p>
           </div>
-          <div>
-            <dt>Who can rate</dt>
-            <dd>Anyone, once per review</dd>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span>How do I find my pairing code?</span>
+            <span class="faq-question-icon" data-icon="chevronDown" data-icon-size="sm"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>The Windows agent displays a pairing PIN when a device is ready to connect.</p>
           </div>
-        </dl>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span>Can I use PC Remote for gaming?</span>
+            <span class="faq-question-icon" data-icon="chevronDown" data-icon-size="sm"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>PC Remote can be useful for basic mouse and keyboard control, but actual responsiveness depends on the connection, device, and application.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span>Does my data go to the cloud?</span>
+            <span class="faq-question-icon" data-icon="chevronDown" data-icon-size="sm"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>The product is designed around local communication. Direct control messages flow between your phone and PC over your local network.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span>What operating systems are supported?</span>
+            <span class="faq-question-icon" data-icon="chevronDown" data-icon-size="sm"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>Windows 7 / 8 / 10 / 11 for the desktop agent, and Android 8.0+ for the controller app.</p>
+          </div>
+        </details>
       </div>
     </section>
 
   </div>
 </main>
 
+<!-- Footer -->
 <footer class="footer">
   <div class="wrap">
     <div class="footer-header">
       <div class="footer-brand">
-        <svg class="brand-mark" viewBox="0 0 26 26" aria-hidden="true" focusable="false">
-          <rect width="26" height="26" rx="6" fill="var(--accent)"/>
-          <rect x="6.5" y="15" width="3" height="4.5" rx="1.5" fill="var(--accent-contrast)" opacity=".55"/>
-          <rect x="11.5" y="11" width="3" height="8.5" rx="1.5" fill="var(--accent-contrast)" opacity=".78"/>
-          <rect x="16.5" y="6.5" width="3" height="13" rx="1.5" fill="var(--accent-contrast)"/>
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="3" width="14" height="10" rx="1.5" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <path d="M6 13v3M12 13v3M4 16h10" stroke="var(--accent)"/>
+          <rect x="15" y="9" width="7" height="12" rx="1.5" fill="var(--surface)" stroke="var(--accent)"/>
+          <circle cx="18.5" cy="18" r="0.75" fill="var(--accent)"/>
         </svg>
-        <span class="brand-name">Rate AI</span>
+        <span class="brand-name">PC Remote</span>
       </div>
       <p class="footer-disclaimer">
-        Rate AI is an open, neutral review platform for artificial intelligence tools. All community ratings are authentic, unedited, and protected against manipulation. AI tools in the directory are maintained and verified by web developers.
+        A simple, private way to control your Windows PC from your Android phone over local Wi-Fi or USB.
       </p>
     </div>
 
     <div class="footer-grid">
       <div class="footer-col">
-        <span class="footer-col-title">About</span>
-        <a href="about.html">About us</a>
-        <a href="how-it-works.html">How Rate AI works</a>
-        <a href="trust.html">Trust Report</a>
-        <a href="contact.html">Contact</a>
+        <span class="footer-col-title">Product</span>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#download">Download Center</a>
       </div>
 
       <div class="footer-col">
-        <span class="footer-col-title">Community</span>
-        <a href="trust.html">Trust in reviews</a>
-        <a href="guidelines.html">Guidelines for Reviewers</a>
-        <a href="faq.html">Help Center &amp; FAQ</a>
-        <a href="explore.html?sort=rating">Top Rated AI</a>
+        <span class="footer-col-title">Support</span>
+        <a href="index.html#faq">FAQ</a>
+        <a href="mailto:support@pcremote.app">Contact Support</a>
+        <a href="index.html#security">Security &amp; Privacy</a>
       </div>
 
       <div class="footer-col">
-        <span class="footer-col-title">Directory</span>
-        <a href="explore.html">Explore all tools</a>
-        <a href="compare.html">Compare AI models</a>
-        <a href="explore.html?sort=trending">Trending tools</a>
-        <a href="explore.html?sort=rating">Leaderboard</a>
-      </div>
-
-      <div class="footer-col footer-col-region">
-        <span class="footer-col-title">Choose country</span>
-        <div class="country-picker" aria-label="Region selector">
-          <span class="country-code" aria-hidden="true">US</span>
-          <span class="country-name">United States (Global)</span>
-        </div>
-        <span class="footer-col-title footer-follow-label">Follow us on</span>
-        <div class="footer-socials">
-          <a class="footer-social-link" href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X (formerly Twitter)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
-          <a class="footer-social-link" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-          </a>
-          <a class="footer-social-link" href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.65 1.65 0 0 0-1.66 1.66 1.66 1.66 0 0 0 1.66 1.66 1.66 1.66 0 0 0 1.65-1.66 1.66 1.66 0 0 0-1.65-1.66z"/></svg>
-          </a>
-        </div>
+        <span class="footer-col-title">Legal</span>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms &amp; Conditions</a>
       </div>
     </div>
 
     <div class="footer-base">
       <div class="footer-legal">
-        <span class="footer-legal-tag">Legal</span>
         <a href="privacy.html">Privacy Policy</a>
         <a href="terms.html">Terms &amp; Conditions</a>
-        <a href="guidelines.html">Guidelines for Reviewers</a>
-        <a href="trust.html">System Status</a>
       </div>
       <div class="footer-copy">
-        &copy; <span data-year>2026</span> Rate AI, Inc. All rights reserved.
+        &copy; <span data-year>2026</span> PC Remote. All rights reserved.
       </div>
     </div>
   </div>
 </footer>
 
-<nav class="tabbar" aria-label="Primary">
-  <a class="tabbar-link" href="index.html" aria-current="page">
-    <span data-icon="home" data-icon-size="md"></span>Overview
-  </a>
-  <a class="tabbar-link" href="explore.html">
-    <span data-icon="compass" data-icon-size="md"></span>Explore
-  </a>
-  <a class="tabbar-link" href="compare.html">
-    <span data-icon="compare" data-icon-size="md"></span>Compare
-  </a>
-  <a class="tabbar-link" href="pricing/index.html">
-    <span data-icon="sparkles" data-icon-size="md"></span>Pricing
-  </a>
-</nav>
-
+<script type="module" src="js/shell.js"></script>
 <script type="module" src="js/pages/home.js"></script>
 </body>
 </html>
