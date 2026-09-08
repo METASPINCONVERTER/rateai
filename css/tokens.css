@@ -1,182 +1,209 @@
 /* ==========================================================================
-   Rate AI — Design tokens
-   The only file in this project permitted to contain a raw colour value.
-   Everything downstream references these. See DESIGN.md for the reasoning.
+   PC Remote — Design tokens
+   Milky-purple glass color palette & layout tokens.
    ========================================================================== */
 
 :root {
   color-scheme: light;
 
   /* --- Surfaces & text -------------------------------------------------- */
-  --bg:              #F7F7F3;
+  --bg:              #F3EFFA;
   --surface:         #FFFFFF;
-  --surface-subtle:  #F2F2EE;
-  --surface-sunken:  #EDEDE8;
+  --surface-subtle:  #F7F4FD;
+  --surface-sunken:  #EBE3F6;
 
-  --text-primary:    #171717;
-  /* The two quieter tiers are darker than a purely visual choice would make
-     them: metadata is content, so every tier has to clear 4.5:1 on all four
-     surfaces above. Hierarchy is then carried by size and weight as much as by
-     tone — see tools/verify.mjs, which enforces the ratios. */
-  --text-secondary:  #57574F;
-  --text-muted:      #6B6B64;
+  --text-primary:    #181224;
+  --text-secondary:  #4D465E;
+  --text-muted:      #5E5672;
 
-  /* Three weights of hairline, and the distinction is not cosmetic.
-     border / border-strong outline things you read — cards, dividers, table
-     rows, notices — where the edge is decoration and quietness is the point.
-     border-control outlines things you operate: a white input on a near-white
-     panel is identified by its border and nothing else, so that border has to
-     clear 3:1 against every surface it can sit on (WCAG 1.4.11). Using the
-     quiet one there is the mistake this token exists to prevent. */
-  --border:          #E5E5DF;
-  --border-strong:   #D8D8D1;
-  --border-control:  #8C8C85;
+  --border:          #E1D6F2;
+  --border-strong:   #CEBEE7;
+  --border-control:  #7A63A0;
 
-  /* --- Brand accent: deep spruce ---------------------------------------- */
-  /* accent          = solid brand fill (buttons, meters)
-     accent-contrast = text/icon sitting ON that fill
-     accent-text     = accent-coloured text sitting on a page surface        */
-  --accent:          #1F5741;
-  --accent-hover:    #17422F;
-  --accent-active:   #103324;
+  /* --- Brand accent: soft violet / lavender ----------------------------- */
+  --accent:          #6841C6;
+  --accent-hover:    #5632AC;
+  --accent-active:   #462593;
   --accent-contrast: #FFFFFF;
-  --accent-text:     #1F5741;
-  --accent-wash:     #EDF1EC;
-  --accent-border:   #CFDDD4;
+  --accent-text:     #5632AC;
+  --accent-wash:     #EFEAFA;
+  --accent-border:   #CBB9EC;
 
-  /* --- Semantic: only where colour carries meaning ---------------------- */
-  --positive:        #1F5741;
-  --caution:         #8A5A1B;
-  --caution-wash:    #F8F1E4;
-  --negative:        #9B2C2C;
-  --negative-wash:   #FAEFEF;
+  /* --- Semantic --------------------------------------------------------- */
+  --positive:        #1D6B4C;
+  --caution:         #835312;
+  --caution-wash:    #F9F3E8;
+  --negative:        #9B2828;
+  --negative-wash:   #FAF0F0;
 
-  /* --- Rating marks: ink baseline with semantic tier highlights ------- */
-  --star-on:         #171717;
-  /* Same weight as a control border, for the same reason: on the rate-a-tool
-     form the empty stars are the targets, so they have to be visible before
-     they are chosen. Held to 3:1 rather than left as a faint track. */
-  --star-off:        #8C8C85;
-  --star-high:       #1F5741;
-  --star-mid:        #B45309;
-  --star-low:        #9B2C2C;
+  /* --- Rating marks & status ------------------------------------------- */
+  --star-on:         #181224;
+  --star-off:        #7A63A0;
+  --star-high:       #1D6B4C;
+  --star-mid:        #9E530C;
+  --star-low:        #9B2828;
 
   /* --- Focus ----------------------------------------------------------- */
-  --focus-ring:      #1F5741;
+  --focus-ring:      #6841C6;
 
-  /* --- Elevation: hairline first, shadow only when genuinely floating -- */
-  --shadow-sm: 0 1px 2px rgba(23, 23, 23, .04);
-  --shadow-md: 0 4px 12px rgba(23, 23, 23, .06), 0 1px 2px rgba(23, 23, 23, .04);
-  --shadow-lg: 0 16px 40px rgba(23, 23, 23, .10), 0 2px 8px rgba(23, 23, 23, .05);
-  --scrim:     rgba(23, 23, 23, .45);
+  /* --- Elevation & Glassmorphism --------------------------------------- */
+  --shadow-sm: 0 2px 8px rgba(24, 18, 36, .04);
+  --shadow-md: 0 8px 24px rgba(24, 18, 36, .08), 0 2px 4px rgba(24, 18, 36, .04);
+  --shadow-lg: 0 20px 48px rgba(24, 18, 36, .12), 0 4px 12px rgba(24, 18, 36, .06);
+  --scrim:     rgba(24, 18, 36, .45);
 
-  /* --- Top & Bottom Shell Bars (header & footer matching background) --- */
+  --glass-bg:     rgba(255, 255, 255, .65);
+  --glass-border: rgba(225, 214, 242, .8);
+  --glass-shadow: 0 12px 36px rgba(104, 65, 198, .08);
+
+  /* --- Atmosphere Shapes & Buttons ------------------------------------- */
+  --bg-shape-1:              rgba(180, 142, 246, .6);
+  --bg-shape-1-sub:          rgba(200, 172, 250, .3);
+  --bg-shape-2:              rgba(204, 178, 252, .5);
+  --bg-shape-2-sub:          rgba(224, 206, 255, .25);
+  --bg-shape-hero:           rgba(192, 158, 248, .45);
+  --bg-shape-3:              rgba(212, 186, 252, .45);
+  --btn-primary-hover:       #2B223C;
+  --btn-primary-shadow:      rgba(24, 18, 36, .12);
+  --btn-primary-shadow-hover: rgba(24, 18, 36, .18);
+  --cursor-shadow:           rgba(104, 65, 198, .3);
+
+  /* --- Top & Bottom Shell Bars ----------------------------------------- */
   --bar-bg:          #FFFFFF;
-  --bar-text:        #171717;
-  --bar-border:      #E5E5DF;
-  --content-bg:      #F7F7F3;
+  --bar-text:        #181224;
+  --bar-border:      #E1D6F2;
+  --content-bg:      #F3EFFA;
 }
 
-/* --- Dark: a warm ink, mirroring the warm paper of the light theme ------ */
+/* --- Dark mode ----------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --bg:              #141412;
-    --surface:         #1C1C19;
-    --surface-subtle:  #232320;
-    --surface-sunken:  #111110;
+    --bg:              #120E1A;
+    --surface:         #1A1426;
+    --surface-subtle:  #221B30;
+    --surface-sunken:  #0C0912;
 
-    --text-primary:    #F2F2ED;
-    --text-secondary:  #A6A69F;
-    --text-muted:      #8C8C82;
+    --text-primary:    #F5F2FA;
+    --text-secondary:  #B8AECB;
+    --text-muted:      #A093B8;
 
-    --border:          #2C2C28;
-    --border-strong:   #3A3A35;
-    --border-control:  #6D6D66;
+    --border:          #2D2340;
+    --border-strong:   #3D3056;
+    --border-control:  #8A78A8;
 
-    --accent:          #7CCCA6;
-    --accent-hover:    #96D9B8;
-    --accent-active:   #AEE3C8;
-    --accent-contrast: #0E1F17;
-    --accent-text:     #7CCCA6;
-    --accent-wash:     #19241F;
-    --accent-border:   #2F473C;
+    --accent:          #B292F8;
+    --accent-hover:    #C5ACFA;
+    --accent-active:   #D8C6FC;
+    --accent-contrast: #120E1A;
+    --accent-text:     #B292F8;
+    --accent-wash:     #221838;
+    --accent-border:   #423263;
 
-    --positive:        #7CCCA6;
-    --caution:         #D9A45B;
-    --caution-wash:    #262015;
-    --negative:        #E58C8C;
-    --negative-wash:   #2A1B1B;
+    --positive:        #78D8AD;
+    --caution:         #E8B668;
+    --caution-wash:    #2A2012;
+    --negative:        #E88B8B;
+    --negative-wash:   #2D1919;
 
-    --star-on:         #F2F2ED;
-    --star-off:        #6D6D66;
-    --star-high:       #7CCCA6;
-    --star-mid:        #F59E0B;
-    --star-low:        #E58C8C;
+    --star-on:         #F5F2FA;
+    --star-off:        #8A78A8;
+    --star-high:       #78D8AD;
+    --star-mid:        #E8B668;
+    --star-low:        #E88B8B;
 
-    --focus-ring:      #7CCCA6;
+    --focus-ring:      #B292F8;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, .35), 0 1px 2px rgba(0, 0, 0, .25);
-    --shadow-lg: 0 16px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, .3);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, .35), 0 2px 4px rgba(0, 0, 0, .2);
+    --shadow-lg: 0 20px 48px rgba(0, 0, 0, .5), 0 4px 12px rgba(0, 0, 0, .3);
     --scrim:     rgba(0, 0, 0, .65);
 
-    --bar-bg:          #0D0D0B;
-    --bar-text:        #F2F2ED;
-    --bar-border:      #262622;
-    --content-bg:      #141412;
+    --glass-bg:     rgba(26, 20, 38, .75);
+    --glass-border: rgba(61, 48, 86, .8);
+    --glass-shadow: 0 12px 36px rgba(0, 0, 0, .4);
+
+    --bg-shape-1:              rgba(110, 80, 180, .4);
+    --bg-shape-1-sub:          rgba(90, 60, 150, .2);
+    --bg-shape-2:              rgba(120, 90, 190, .35);
+    --bg-shape-2-sub:          rgba(100, 70, 160, .2);
+    --bg-shape-hero:           rgba(120, 80, 190, .3);
+    --bg-shape-3:              rgba(110, 75, 180, .3);
+    --btn-primary-hover:       #B292F8;
+    --btn-primary-shadow:      rgba(0, 0, 0, .3);
+    --btn-primary-shadow-hover: rgba(0, 0, 0, .4);
+    --cursor-shadow:           rgba(178, 146, 248, .3);
+
+    --bar-bg:          #0C0912;
+    --bar-text:        #F5F2FA;
+    --bar-border:      #221B30;
+    --content-bg:      #120E1A;
   }
 }
 
-/* --- Manual override, set by the theme toggle before first paint -------- */
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg:              #141412;
-  --surface:         #1C1C19;
-  --surface-subtle:  #232320;
-  --surface-sunken:  #111110;
+  --bg:              #120E1A;
+  --surface:         #1A1426;
+  --surface-subtle:  #221B30;
+  --surface-sunken:  #0C0912;
 
-  --text-primary:    #F2F2ED;
-  --text-secondary:  #A6A69F;
-  --text-muted:      #8C8C82;
+  --text-primary:    #F5F2FA;
+  --text-secondary:  #B8AECB;
+  --text-muted:      #A093B8;
 
-  --border:          #2C2C28;
-  --border-strong:   #3A3A35;
-  --border-control:  #6D6D66;
+  --border:          #2D2340;
+  --border-strong:   #3D3056;
+  --border-control:  #8A78A8;
 
-  --accent:          #7CCCA6;
-  --accent-hover:    #96D9B8;
-  --accent-active:   #AEE3C8;
-  --accent-contrast: #0E1F17;
-  --accent-text:     #7CCCA6;
-  --accent-wash:     #19241F;
-  --accent-border:   #2F473C;
+  --accent:          #B292F8;
+  --accent-hover:    #C5ACFA;
+  --accent-active:   #D8C6FC;
+  --accent-contrast: #120E1A;
+  --accent-text:     #B292F8;
+  --accent-wash:     #221838;
+  --accent-border:   #423263;
 
-  --positive:        #7CCCA6;
-  --caution:         #D9A45B;
-  --caution-wash:    #262015;
-  --negative:        #E58C8C;
-  --negative-wash:   #2A1B1B;
+  --positive:        #78D8AD;
+  --caution:         #E8B668;
+  --caution-wash:    #2A2012;
+  --negative:        #E88B8B;
+  --negative-wash:   #2D1919;
 
-  --star-on:         #F2F2ED;
-  --star-off:        #6D6D66;
-  --star-high:       #7CCCA6;
-  --star-mid:        #F59E0B;
-  --star-low:        #E58C8C;
+  --star-on:         #F5F2FA;
+  --star-off:        #8A78A8;
+  --star-high:       #78D8AD;
+  --star-mid:        #E8B668;
+  --star-low:        #E88B8B;
 
-  --focus-ring:      #7CCCA6;
+  --focus-ring:      #B292F8;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, .35), 0 1px 2px rgba(0, 0, 0, .25);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, .35), 0 2px 4px rgba(0, 0, 0, .2);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, .5), 0 4px 12px rgba(0, 0, 0, .3);
   --scrim:     rgba(0, 0, 0, .65);
 
-  --bar-bg:          #0D0D0B;
-  --bar-text:        #F2F2ED;
-  --bar-border:      #262622;
-  --content-bg:      #141412;
+  --glass-bg:     rgba(26, 20, 38, .75);
+  --glass-border: rgba(61, 48, 86, .8);
+  --glass-shadow: 0 12px 36px rgba(0, 0, 0, .4);
+
+  --bg-shape-1:              rgba(110, 80, 180, .4);
+  --bg-shape-1-sub:          rgba(90, 60, 150, .2);
+  --bg-shape-2:              rgba(120, 90, 190, .35);
+  --bg-shape-2-sub:          rgba(100, 70, 160, .2);
+  --bg-shape-hero:           rgba(120, 80, 190, .3);
+  --bg-shape-3:              rgba(110, 75, 180, .3);
+  --btn-primary-hover:       #B292F8;
+  --btn-primary-shadow:      rgba(0, 0, 0, .3);
+  --btn-primary-shadow-hover: rgba(0, 0, 0, .4);
+  --cursor-shadow:           rgba(178, 146, 248, .3);
+
+  --bar-bg:          #0C0912;
+  --bar-text:        #F5F2FA;
+  --bar-border:      #221B30;
+  --content-bg:      #120E1A;
 }
 
 /* ==========================================================================
@@ -184,7 +211,6 @@
    ========================================================================== */
 
 :root {
-  /* --- Type ------------------------------------------------------------- */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                "Helvetica Neue", Arial, sans-serif;
 
@@ -198,11 +224,11 @@
   --t-meta:     0.75rem;   /* 12px */
   --t-score:    2.5rem;    /* 40px */
 
-  --lh-display: 1.06;
-  --lh-tight:   1.15;
-  --lh-snug:    1.3;
-  --lh-normal:  1.45;
-  --lh-prose:   1.6;
+  --lh-display: 1.08;
+  --lh-tight:   1.18;
+  --lh-snug:    1.32;
+  --lh-normal:  1.48;
+  --lh-prose:   1.62;
 
   --tr-display: -0.03em;
   --tr-h1:      -0.02em;
@@ -217,7 +243,6 @@
 
   --measure: 68ch;
 
-  /* --- Space: the only permitted values -------------------------------- */
   --s-1:   4px;
   --s-2:   8px;
   --s-3:   12px;
@@ -230,40 +255,33 @@
   --s-10:  64px;
   --s-11:  80px;
 
-  /* --- Radius: curvature scales with the element ----------------------- */
   --r-sm:   8px;
-  --r-md:  10px;
-  --r-lg:  12px;
+  --r-md:  12px;
+  --r-lg:  16px;
+  --r-xl:  24px;
   --r-pill: 999px;
 
-  /* --- Controls -------------------------------------------------------- */
   --ctl-sm: 32px;
   --ctl:    40px;
   --ctl-lg: 48px;
-  --ctl-xl: 56px;  /* hero search only — the one control meant to dominate */
-  --touch:  44px;   /* minimum comfortable target */
+  --ctl-xl: 56px;
+  --touch:  44px;
 
-  /* A badge is not on the control ladder: its height is derived from what it
-     contains — a 12px meta line, 4px of padding above and below, and a hairline
-     either side. Named because the badge and its loading placeholder must be
-     exactly the same height or cards resize as they load. */
   --badge-h: 22px;
 
-  /* --- Layout ---------------------------------------------------------- */
-  --content-max: 1152px;
+  --content-max: 1120px;
   --gutter:      24px;
-  --nav-h:       56px;
+  --nav-h:       64px;
   --tabbar-h:    58px;
 
-  /* --- Motion: answers actions, never decorates ------------------------ */
   --dur-fast: 120ms;
   --dur:      180ms;
   --dur-slow: 240ms;
   --ease:     cubic-bezier(.2, .7, .3, 1);
 
-  /* --- Stacking -------------------------------------------------------- */
-  --z-nav:   100;
-  --z-toast: 300;
+  --z-bg:     -10;
+  --z-nav:    100;
+  --z-toast:  300;
 }
 
 @media (max-width: 767px) {
